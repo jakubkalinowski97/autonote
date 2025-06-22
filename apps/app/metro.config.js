@@ -1,9 +1,5 @@
 const { withNxMetro } = require('@nx/expo');
 const { getDefaultConfig } = require('@expo/metro-config');
-const { mergeConfig } = require('metro-config');
-
-const defaultConfig = getDefaultConfig(__dirname);
-const { assetExts, sourceExts } = defaultConfig.resolver;
 
 /**
  * Metro configuration
@@ -15,14 +11,29 @@ const customConfig = {
   cacheVersion: 'app',
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
   },
   resolver: {
-    assetExts: assetExts.filter((ext) => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'cjs', 'mjs', 'svg'],
+    // This is a temporary workaround for the issue with the 'local' package in the monorepo.
+    // The 'assetExts' and 'sourceExts' are not being correctly resolved from the default config.
+    assetExts: require('@expo/metro-config/build/defaults').assetExts.filter(
+      (ext) => ext !== 'svg'
+    ),
+    sourceExts: [
+      ...require('@expo/metro-config/build/defaults').sourceExts,
+      'cjs',
+      'mjs',
+      'svg',
+    ],
   },
 };
 
-module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
+module.exports = withNxMetro(customConfig, {
   // Change this to true to see debugging info.
   // Useful if you have issues resolving modules
   debug: false,
