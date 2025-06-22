@@ -18,52 +18,48 @@ The architecture is built on modern, cloud-native principles to ensure scalabili
 
 ```mermaid
 graph TD
-    subgraph "User's Device"
-        A[Expo App on Web/Mobile]
+    subgraph "User"
+        U["User's Browser / Device"]
     end
 
-    subgraph "AWS Cloud"
-        B[AWS Amplify Hosting]
-        C[Amazon ECR<br>(Docker Registry)]
-        D[Amazon ECS on Fargate<br>(NestJS Backend)]
-        E[VPC/Networking]
-    end
-    
-    subgraph "Supabase Cloud"
-        F[Supabase Database<br>(PostgreSQL)]
-        G[Supabase Auth]
+    subgraph "CI/CD - GitHub"
+        Repo["GitHub Monorepo (Nx)"] -- "1. Push to main" --> Actions{"GitHub Actions"}
     end
 
-    subgraph "Development & CI/CD"
-        H[GitHub Repository<br>(Nx Monorepo)]
-        I[GitHub Actions]
+    subgraph "Frontend - AWS"
+        Amplify["AWS Amplify Hosting"]
     end
-    
-    A --> B
-    A -- API Calls --> D
-    A -- Auth Requests --> G
-    
-    D -- DB Queries --> F
-    
-    I -- Build & Push --> C
-    I -- Deploy --> B
-    I -- Deploy --> D
-    I -- DB Migrations --> F
-    
-    H -- Triggers --> I
-    
-    D -- Pulls Image --> C
 
-    linkStyle 0 stroke:#007bff,stroke-width:2px;
-    linkStyle 1 stroke:#28a745,stroke-width:2px;
-    linkStyle 2 stroke:#28a745,stroke-width:2px;
-    linkStyle 3 stroke:#dc3545,stroke-width:2px;
-    linkStyle 4 stroke:#17a2b8,stroke-width:2px;
-    linkStyle 5 stroke:#17a2b8,stroke-width:2px;
-    linkStyle 6 stroke:#17a2b8,stroke-width:2px;
-    linkStyle 7 stroke:#17a2b8,stroke-width:2px;
-    linkStyle 8 stroke:#ffc107,stroke-width:2px;
-    linkStyle 9 stroke:#ffc107,stroke-width:2px;
+    subgraph "Backend - AWS"
+        ECS["NestJS API on ECS Fargate"]
+        ECR["ECR Docker Registry"]
+    end
+
+    subgraph "Data & Auth - Supabase"
+        SupabaseDB["Supabase DB (Postgres)"]
+        SupabaseAuth["Supabase Auth"]
+    end
+
+    %% User Flow
+    U -- "A. Accesses site" --> Amplify
+    Amplify -- "B. Loads app, needs to auth" --> SupabaseAuth
+    Amplify -- "C. Makes API calls (with JWT)" --> ECS
+
+    %% Backend Flow
+    ECS -- "D. Validates JWT" --> SupabaseAuth
+    ECS -- "E. CRUD Operations" --> SupabaseDB
+
+    %% Deployment Flow
+    Actions -- "2a. Build & Deploy Site" --> Amplify
+    Actions -- "2b. Build & Push Image" --> ECR
+    Actions -- "2c. Deploy DB Migrations" --> SupabaseDB
+    
+    ECR -- "3. New image available" --> ECS_Event
+    subgraph " "
+      direction LR
+      ECS_Event(ECS Update)
+    end
+    ECS_Event -- "4. Pulls new image & deploys" --> ECS
 ```
 
 ---
