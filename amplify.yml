@@ -1,0 +1,31 @@
+# amplify.yml
+# Version for the Amplify build specification
+version: 1
+applications:
+  - appRoot: apps/app
+    frontend:
+      phases:
+        # preBuild phase: Runs before the main build.
+        # Used for installing dependencies.
+        preBuild:
+          commands:
+            # We start in apps/app, so go back to the root for installs
+            - cd ../..
+            - npm ci
+        build:
+          commands:
+            # Go back to the root again to run the Nx command
+            - cd ../..
+            - npx nx export app
+      # artifacts: Tells Amplify where to find the generated files for hosting.
+      artifacts:
+        # Path is relative to appRoot. Build output is in apps/app/dist
+        baseDirectory: dist
+        # Include all files within that directory.
+        files:
+          - '**/*'
+      # cache: Speeds up future builds by caching dependencies.
+      cache:
+        # Path is relative to the project root
+        paths:
+          - node_modules/**/* 

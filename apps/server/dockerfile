@@ -1,0 +1,35 @@
+    # ---- Builder Stage ----
+    # Use a full Node.js image to build the application
+    FROM node:18 AS builder
+    WORKDIR /usr/src/app
+
+    # Copy root package files and install all monorepo dependencies
+    COPY package*.json ./
+    COPY nx.json ./
+    COPY tsconfig.base.json ./
+    RUN npm ci
+
+    # Copy the server application code
+    COPY apps/server apps/server
+
+    # Build the server application
+    RUN npx nx build server
+
+    # ---- Runner Stage ----
+    # Use a lightweight Node.js image for the final container
+    FROM node:18-alpine
+    WORKDIR /usr/src/app
+
+    # Copy only the production dependencies from the builder stage
+    # We need to install production dependencies only in the runner
+    COPY package*.json ./
+    RUN npm ci --omit=dev
+
+    # Copy the built application from the builder stage
+    COPY --from=builder /usr/src/app/dist/apps/server ./dist
+
+    # Expose the port the app runs on
+    EXPOSE 3000
+
+    # The command to run the application
+    CMD ["node", "dist/main.js"]
