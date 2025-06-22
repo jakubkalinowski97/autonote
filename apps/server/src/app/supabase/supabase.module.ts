@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '@auto-note-workspace/shared';
 import { SupabaseService } from './supabase.service';
 
 @Module({
@@ -9,7 +10,7 @@ import { SupabaseService } from './supabase.service';
       provide: 'SUPABASE_CLIENT',
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        return createClient(
+        return createClient<Database>(
           configService.get<string>('SUPABASE_URL') || '',
           configService.get<string>('SUPABASE_KEY') || ''
         );
