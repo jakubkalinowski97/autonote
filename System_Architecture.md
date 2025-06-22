@@ -24,18 +24,18 @@ graph TD
 
     subgraph "AWS Cloud"
         B[AWS Amplify Hosting]
-        C[Amazon ECR<br/>(Docker Registry)]
-        D[Amazon ECS on Fargate<br/>(NestJS Backend)]
+        C[Amazon ECR<br>(Docker Registry)]
+        D[Amazon ECS on Fargate<br>(NestJS Backend)]
         E[VPC/Networking]
     end
     
     subgraph "Supabase Cloud"
-        F[Supabase Database<br/>(PostgreSQL)]
+        F[Supabase Database<br>(PostgreSQL)]
         G[Supabase Auth]
     end
 
     subgraph "Development & CI/CD"
-        H[GitHub Repository<br/>(Nx Monorepo)]
+        H[GitHub Repository<br>(Nx Monorepo)]
         I[GitHub Actions]
     end
     
