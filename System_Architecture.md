@@ -23,7 +23,7 @@ graph TD
     end
 
     subgraph "CI/CD - GitHub"
-        Repo["GitHub Monorepo (Nx)"] -- "1. Push to main" --> Actions{"GitHub Actions"}
+        Repo["GitHub Monorepo (Nx)"] -- "Push to main" --> Actions{"GitHub Actions"}
     end
 
     subgraph "Frontend - AWS"
@@ -41,25 +41,25 @@ graph TD
     end
 
     %% User Flow
-    U -- "A. Accesses site" --> Amplify
-    Amplify -- "B. Loads app, needs to auth" --> SupabaseAuth
-    Amplify -- "C. Makes API calls (with JWT)" --> ECS
+    U -- "Accesses site" --> Amplify
+    Amplify -- "Loads app, needs to auth" --> SupabaseAuth
+    Amplify -- "Makes API calls (with JWT)" --> ECS
 
     %% Backend Flow
-    ECS -- "D. Validates JWT" --> SupabaseAuth
-    ECS -- "E. CRUD Operations" --> SupabaseDB
+    ECS -- "Validates JWT" --> SupabaseAuth
+    ECS -- "CRUD Operations" --> SupabaseDB
 
     %% Deployment Flow
-    Actions -- "2a. Build & Deploy Site" --> Amplify
-    Actions -- "2b. Build & Push Image" --> ECR
-    Actions -- "2c. Deploy DB Migrations" --> SupabaseDB
+    Actions -- "Build & Deploy Site" --> Amplify
+    Actions -- "Build & Push Image" --> ECR
+    Actions -- "Deploy DB Migrations" --> SupabaseDB
     
-    ECR -- "3. New image available" --> ECS_Event
+    ECR -- "New image available" --> ECS_Event
     subgraph " "
       direction LR
       ECS_Event(ECS Update)
     end
-    ECS_Event -- "4. Pulls new image & deploys" --> ECS
+    ECS_Event -- "Pulls new image & deploys" --> ECS
 ```
 
 ---
