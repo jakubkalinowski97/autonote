@@ -38,13 +38,15 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: autonote/server # Define repository here as it's not a secret
+          ECR_REPOSITORY: autonote/server
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build the docker image
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/server/Dockerfile .
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f apps/server/Dockerfile .
+          # Build the docker image for the correct platform (amd64)
+          docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/server/Dockerfile .
           
-          # Push the tagged images to ECR
+          # Tag the same image with 'latest'
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          
+          # Push both tags to ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest 
