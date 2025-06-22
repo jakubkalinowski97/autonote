@@ -5,7 +5,7 @@
   "scripts": {
     "start:server": "nx serve server",
     "start:app": "nx start app",
-    "build:app": "nx export app"
+    "build:app": "nx export app --clear"
   },
   "private": true,
   "devDependencies": {
