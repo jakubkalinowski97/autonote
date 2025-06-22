@@ -1,100 +1,143 @@
-import { createTamagui, createTokens } from 'tamagui'
-import { createInterFont } from '@tamagui/font-inter'
+import { createTamagui, createFont } from 'tamagui'
 import { shorthands } from '@tamagui/shorthands'
-import { themes } from '@tamagui/themes'
-import { color as tamaguiColors, radius, size, space, zIndex } from '@tamagui/themes'
+import { tokens } from '@tamagui/themes'
+import { createThemes, defaultComponentThemes } from '@tamagui/theme-builder'
+import * as Colors from '@tamagui/colors'
 
-const headingFont = createInterFont({
+const interFont = createFont({
+  family: 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif',
   size: {
-    6: 15,
+    1: 12,
+    2: 14,
+    3: 15,
+    4: 16,
+    5: 18,
+    6: 20,
+    7: 24,
+    8: 30,
+    9: 48,
   },
-  transform: {
-    6: 'uppercase',
-    7: 'none',
+  weight: {
+    1: '300',
+    3: '400',
+    4: '500',
+    6: '700',
+    7: '900',
+  },
+  lineHeight: {
+    1: 14,
+    2: 18,
+    3: 20,
+    4: 22,
+    5: 24,
+    6: 28,
+    7: 32,
+    8: 38,
+    9: 58,
+  },
+  letterSpacing: {
+    1: 0,
+    2: -0.5,
   },
 })
 
-const bodyFont = createInterFont({
-  size: {
-    6: 15,
-  },
-})
+const darkPalette = ['hsla(0, 15%, 1%, 1)','hsla(0, 15%, 6%, 1)','hsla(0, 15%, 12%, 1)','hsla(0, 15%, 17%, 1)','hsla(0, 15%, 23%, 1)','hsla(0, 15%, 28%, 1)','hsla(0, 15%, 34%, 1)','hsla(0, 15%, 39%, 1)','hsla(0, 15%, 45%, 1)','hsla(0, 15%, 50%, 1)','hsla(0, 15%, 93%, 1)','hsla(0, 15%, 99%, 1)']
+const lightPalette = ['hsla(0, 15%, 99%, 1)','hsla(0, 15%, 94%, 1)','hsla(0, 15%, 88%, 1)','hsla(0, 15%, 83%, 1)','hsla(0, 15%, 77%, 1)','hsla(0, 15%, 72%, 1)','hsla(0, 15%, 66%, 1)','hsla(0, 15%, 61%, 1)','hsla(0, 15%, 55%, 1)','hsla(0, 15%, 50%, 1)','hsla(0, 15%, 15%, 1)','hsla(0, 15%, 1%, 1)']
 
-// Custom color palette
-export const color = {
-  white: '#FFFFFF',
-  black: '#000000',
-
-  // Neutrals (Grays)
-  gray0: '#F9FAFB',
-  gray1: '#F3F4F6',
-  gray2: '#E5E7EB',
-  gray3: '#D1D5DB',
-  gray4: '#9CA3AF',
-  gray5: '#6B7280',
-  gray6: '#4B5563',
-  gray7: '#374151',
-  gray8: '#1F2937',
-  gray9: '#111827',
-
-  // Accent (Modern Blue)
-  blue1: '#EFF6FF',
-  blue2: '#DBEAFE',
-  blue3: '#BFDBFE',
-  blue4: '#93C5FD',
-  blue5: '#60A5FA',
-  blue6: '#3B82F6', // Primary
-  blue7: '#2563EB',
-  blue8: '#1D4ED8',
-  blue9: '#1E40AF',
-
-  // Alerts (optional)
-  red: '#EF4444',
-  yellow: '#FACC15',
-  green: '#10B981',
+const lightShadows = {
+  shadow1: 'rgba(0,0,0,0.04)',
+  shadow2: 'rgba(0,0,0,0.08)',
+  shadow3: 'rgba(0,0,0,0.16)',
+  shadow4: 'rgba(0,0,0,0.24)',
+  shadow5: 'rgba(0,0,0,0.32)',
+  shadow6: 'rgba(0,0,0,0.4)',
 }
 
-const tokens = createTokens({
-  color: {
-    ...tamaguiColors,
-    ...color,
+const darkShadows = {
+  shadow1: 'rgba(0,0,0,0.2)',
+  shadow2: 'rgba(0,0,0,0.3)',
+  shadow3: 'rgba(0,0,0,0.4)',
+  shadow4: 'rgba(0,0,0,0.5)',
+  shadow5: 'rgba(0,0,0,0.6)',
+  shadow6: 'rgba(0,0,0,0.7)',
+}
+
+const builtThemes = createThemes({
+  componentThemes: defaultComponentThemes,
+  base: {
+    palette: {
+      dark: darkPalette,
+      light: lightPalette,
+    },
+    extra: {
+      light: {
+        ...Colors.green,
+        ...Colors.red,
+        ...Colors.yellow,
+        ...lightShadows,
+        shadowColor: lightShadows.shadow1,
+      },
+      dark: {
+        ...Colors.greenDark,
+        ...Colors.redDark,
+        ...Colors.yellowDark,
+        ...darkShadows,
+        shadowColor: darkShadows.shadow1,
+      },
+    },
   },
-  radius,
-  size,
-  space,
-  zIndex,
+
+  accent: {
+    palette: {
+      dark: ['hsla(226, 50%, 35%, 1)','hsla(226, 50%, 38%, 1)','hsla(226, 50%, 41%, 1)','hsla(226, 50%, 43%, 1)','hsla(226, 50%, 46%, 1)','hsla(226, 50%, 49%, 1)','hsla(226, 50%, 52%, 1)','hsla(226, 50%, 54%, 1)','hsla(226, 50%, 57%, 1)','hsla(226, 50%, 60%, 1)','hsla(250, 50%, 90%, 1)','hsla(250, 50%, 95%, 1)'],
+      light: ['hsla(226, 50%, 45%, 1)','hsla(226, 50%, 47%, 1)','hsla(226, 50%, 49%, 1)','hsla(226, 50%, 52%, 1)','hsla(226, 50%, 54%, 1)','hsla(226, 50%, 56%, 1)','hsla(226, 50%, 58%, 1)','hsla(226, 50%, 61%, 1)','hsla(226, 50%, 63%, 1)','hsla(226, 50%, 65%, 1)','hsla(250, 50%, 95%, 1)','hsla(250, 50%, 95%, 1)'],
+    },
+  },
+
+  childrenThemes: {
+    warning: {
+      palette: {
+        dark: Object.values(Colors.yellowDark),
+        light: Object.values(Colors.yellow),
+      },
+    },
+
+    error: {
+      palette: {
+        dark: Object.values(Colors.redDark),
+        light: Object.values(Colors.red),
+      },
+    },
+
+    success: {
+      palette: {
+        dark: Object.values(Colors.greenDark),
+        light: Object.values(Colors.green),
+      },
+    },
+  },
 })
+
+export type Themes = typeof builtThemes
+
+export const themes: Themes =
+  process.env.TAMAGUI_ENVIRONMENT === 'client' &&
+  process.env.NODE_ENV === 'production'
+    ? ({} as any)
+    : (builtThemes as any)
 
 
 const appConfig = createTamagui({
-  themes: {
-    ...themes,
-    light_blue: {
-      background: color.white,
-      color: color.gray9,
-      borderColor: color.gray2,
-      placeholderColor: color.gray4,
-    },
-    dark_blue: {
-      background: color.gray9,
-      color: color.gray0,
-      borderColor: color.gray7,
-      placeholderColor: color.gray5,
-    },
-  },
+  themes,
   tokens,
   shorthands,
   fonts: {
-    heading: headingFont,
-    body: bodyFont,
+    body: interFont,
+    heading: interFont,
   },
 })
 
 export type AppConfig = typeof appConfig
 
-declare module 'tamagui' {
-  // or '@tamagui/core'
-  interface TamaguiCustomConfig extends AppConfig {}
-}
 
 export default appConfig 
