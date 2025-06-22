@@ -40,6 +40,7 @@
     "@expo/metro-config": "~0.19.4",
     "@expo/metro-runtime": "~4.0.0",
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@supabase/supabase-js": "^2.50.0",
