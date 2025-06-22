@@ -14,57 +14,69 @@ The architecture is built on modern, cloud-native principles to ensure scalabili
 
 ---
 
-## **2. Component Architecture Diagram**
+## **2. Application Architecture**
+
+This diagram shows how the live components of the system interact.
 
 ```mermaid
 graph TD
-    subgraph "User"
-        U["User's Browser / Device"]
+    subgraph "User's Device"
+        U["Browser / Mobile App"]
     end
 
-    subgraph "CI/CD - GitHub"
-        Repo["GitHub Monorepo (Nx)"] -- "Push to main" --> Actions{"GitHub Actions"}
+    subgraph "Frontend - AWS Amplify"
+        Amplify["Expo Frontend"]
     end
 
-    subgraph "Frontend - AWS"
-        Amplify["AWS Amplify Hosting"]
-    end
-
-    subgraph "Backend - AWS"
-        ECS["NestJS API on ECS Fargate"]
-        ECR["ECR Docker Registry"]
+    subgraph "Backend - AWS ECS"
+        ECS["NestJS API"]
     end
 
     subgraph "Data & Auth - Supabase"
-        SupabaseDB["Supabase DB (Postgres)"]
-        SupabaseAuth["Supabase Auth"]
+        SupabaseDB["Postgres DB"]
+        SupabaseAuth["Authentication"]
     end
 
     %% User Flow
     U -- "Accesses site" --> Amplify
-    Amplify -- "Loads app, needs to auth" --> SupabaseAuth
-    Amplify -- "Makes API calls (with JWT)" --> ECS
-
+    Amplify -- "Authenticates user" --> SupabaseAuth
+    Amplify -- "Makes API calls with JWT" --> ECS
+    
     %% Backend Flow
     ECS -- "Validates JWT" --> SupabaseAuth
-    ECS -- "CRUD Operations" --> SupabaseDB
+    ECS -- "Executes business logic & CRUD operations" --> SupabaseDB
+```
 
-    %% Deployment Flow
-    Actions -- "Build & Deploy Site" --> Amplify
-    Actions -- "Build & Push Image" --> ECR
-    Actions -- "Deploy DB Migrations" --> SupabaseDB
-    
-    ECR -- "New image available" --> ECS_Event
-    subgraph " "
-      direction LR
-      ECS_Event(ECS Update)
+## **3. CI/CD Deployment Flow**
+
+This diagram illustrates the automated CI/CD pipeline from code push to deployment.
+
+```mermaid
+graph TD
+    subgraph "Development"
+        Dev[("Developer")] -- "git push" --> Repo["GitHub Monorepo (Nx)"]
     end
-    ECS_Event -- "Pulls new image & deploys" --> ECS
+
+    subgraph "CI/CD Pipeline - GitHub Actions"
+        Repo -- "Triggers Workflows" --> Actions{"GitHub Actions"}
+    end
+
+    subgraph "Build & Deploy"
+        Actions -- "Build & Push Image" --> ECR["Amazon ECR"]
+        Actions -- "Trigger Deploy" --> Amplify["AWS Amplify"]
+        Actions -- "Push Migrations" --> SupabaseDB["Supabase DB"]
+    end
+
+    subgraph "Live Services"
+        ECR -- "New image available" --> ECS["ECS Service Update"]
+        Amplify -- "Deploys new version" --> AmplifySite[("Live Site")]
+        SupabaseDB -- "Applies migrations" --> LiveDB[("Live DB")]
+    end
 ```
 
 ---
 
-## **3. Detailed Component Breakdown**
+## **4. Detailed Component Breakdown**
 
 ### **Frontend: Expo Application**
 - **Framework:** Expo (React Native)
@@ -80,7 +92,7 @@ graph TD
 - **Deployment:**
     1. Changes to `apps/server/**` trigger a GitHub Actions workflow.
     2. The workflow builds a Docker image and pushes it to Amazon ECR.
-    3. A subsequent job in the workflow triggers a rolling update on the ECS service, deploying the new container image with zero downtime.
+    3. The ECS service is then updated to pull the new image from ECR, performing a rolling update to deploy the new container with zero downtime. This update step can be automated.
 
 ### **Database: Supabase**
 - **Provider:** Supabase (hosted PostgreSQL)
