@@ -28,6 +28,7 @@
     "@swc/helpers": "~0.5.11",
     "@testing-library/jest-native": "~5.4.3",
     "@testing-library/react-native": "~12.9.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "~18.16.9",
     "@types/react": "~18.3.12",
     "babel-preset-expo": "~12.0.1",
@@ -43,6 +44,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.1",
     "@expo/metro-config": "~0.19.4",
     "@expo/metro-runtime": "~4.0.0",
     "@nestjs/common": "^11.0.0",
@@ -50,17 +52,21 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@supabase/supabase-js": "^2.50.0",
+    "@tamagui/config": "^1.128.1",
     "axios": "^1.6.0",
     "expo": "~52.0.11",
+    "expo-font": "^13.3.1",
     "expo-splash-screen": "~0.29.13",
     "expo-status-bar": "~2.0.0",
     "react": "~18.3.1",
     "react-dom": "~18.3.1",
     "react-native": "0.76.3",
+    "react-native-reanimated": "^3.18.0",
     "react-native-svg": "~15.8.0",
     "react-native-svg-transformer": "~1.5.0",
     "react-native-web": "~0.19.13",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tamagui": "^1.128.1"
   }
 }
