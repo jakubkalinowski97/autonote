@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "start:server": "nx serve server",
-    "start:app": "nx start app"
+    "start:app": "nx start app",
+    "build:app": "nx export app"
   },
   "private": true,
   "devDependencies": {
