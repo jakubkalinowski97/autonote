@@ -1,6 +1,11 @@
 import { useRouter } from 'expo-router';
-import { Button, Form, Input, Separator, YStack, XStack } from 'tamagui';
-import { Title, Paragraph, Link } from '../../components/ui/Themed';
+import { Form, Input, Separator, YStack, XStack } from 'tamagui';
+import {
+  Title,
+  Paragraph,
+  Link,
+  StyledButton,
+} from '../../components/ui/Themed';
 
 export default function Register() {
   const router = useRouter();
@@ -30,19 +35,19 @@ export default function Register() {
         <Input placeholder="Confirm Password" size="$4" secureTextEntry />
 
         <Form.Trigger asChild>
-          <Button theme="accent" size="$4" onPress={handleSignUp}>
+          <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handleSignUp}>
             Sign Up
-          </Button>
+          </StyledButton>
         </Form.Trigger>
       </Form>
 
       <Separator width="100%" marginVertical="$4" />
 
       <XStack justifyContent="center" alignItems="baseline" space="$2" marginTop="$4">
-        <Paragraph>
+        <Paragraph fontSize="$3">
           Already have an account?
         </Paragraph>
-        <Link onPress={() => router.push('/login')}>
+        <Link fontSize="$3" onPress={() => router.push('/login')}>
           Sign In
         </Link>
       </XStack>

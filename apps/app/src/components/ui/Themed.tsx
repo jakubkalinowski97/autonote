@@ -6,6 +6,11 @@ export const Title = styled(H3, {
   marginBottom: '$3',
 });
 
+export const HeaderTitle = styled(H3, {
+  name: 'HeaderTitle',
+  fontFamily: '$heading',
+});
+
 export const Paragraph = styled(Text, {
   name: 'Paragraph',
   fontFamily: '$body',
@@ -21,4 +26,17 @@ export const Link = styled(Button, {
   height: 'auto',
   cursor: 'pointer',
   fontSize: '$5',
+});
+
+export const StyledButton = styled(Button, {
+  name: 'StyledButton',
+  fontFamily: '$body',
+
+  variants: {
+    variant: {
+      outlined: {
+        color: '$color10',
+      },
+    },
+  },
 });

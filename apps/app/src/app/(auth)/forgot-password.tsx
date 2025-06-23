@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { Button, Form, Input, YStack } from 'tamagui';
-import { Title, Paragraph, Link } from '../../components/ui/Themed';
+import { Form, Input, YStack } from 'tamagui';
+import { Title, Paragraph, Link, StyledButton } from '../../components/ui/Themed';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -25,14 +25,14 @@ export default function ForgotPassword() {
         <Input placeholder="Email" size="$4" keyboardType="email-address" />
 
         <Form.Trigger asChild>
-          <Button theme="accent" size="$4" onPress={handlePasswordResetRequest}>
+          <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handlePasswordResetRequest}>
             Send Reset Link
-          </Button>
+          </StyledButton>
         </Form.Trigger>
       </Form>
 
       <YStack alignItems="center" marginTop="$4">
-        <Link onPress={() => router.back()}>
+        <Link fontSize="$3" onPress={() => router.back()}>
           Back to Sign In
         </Link>
       </YStack>

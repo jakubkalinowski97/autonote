@@ -3,6 +3,7 @@ import { shorthands } from '@tamagui/shorthands'
 import { tokens } from '@tamagui/themes'
 import { createThemes, defaultComponentThemes } from '@tamagui/theme-builder'
 import * as Colors from '@tamagui/colors'
+import { createAnimations } from '@tamagui/animations-react-native'
 
 const interFont = createFont({
   family: 'Inter, "Helvetica Neue", Helvetica, Arial, sans-serif',
@@ -42,7 +43,7 @@ const interFont = createFont({
 })
 
 const darkPalette = ['hsla(0, 15%, 1%, 1)','hsla(0, 15%, 6%, 1)','hsla(0, 15%, 12%, 1)','hsla(0, 15%, 17%, 1)','hsla(0, 15%, 23%, 1)','hsla(0, 15%, 28%, 1)','hsla(0, 15%, 34%, 1)','hsla(0, 15%, 39%, 1)','hsla(0, 15%, 45%, 1)','hsla(0, 15%, 50%, 1)','hsla(0, 15%, 93%, 1)','hsla(0, 15%, 99%, 1)']
-const lightPalette = ['hsla(0, 15%, 99%, 1)','hsla(0, 15%, 94%, 1)','hsla(0, 15%, 88%, 1)','hsla(0, 15%, 83%, 1)','hsla(0, 15%, 77%, 1)','hsla(0, 15%, 72%, 1)','hsla(0, 15%, 66%, 1)','hsla(0, 15%, 61%, 1)','hsla(0, 15%, 55%, 1)','hsla(0, 15%, 50%, 1)','hsla(0, 15%, 15%, 1)','hsla(0, 15%, 1%, 1)']
+const lightPalette = ['hsla(0, 15%, 94%, 1)','hsla(0, 15%, 88%, 1)','hsla(0, 15%, 83%, 1)','hsla(0, 15%, 77%, 1)','hsla(0, 15%, 72%, 1)','hsla(0, 15%, 66%, 1)','hsla(0, 15%, 61%, 1)','hsla(0, 15%, 55%, 1)','hsla(0, 15%, 50%, 1)','hsla(0, 15%, 15%, 1)','hsla(0, 15%, 1%, 1)']
 
 const lightShadows = {
   shadow1: 'rgba(0,0,0,0.04)',
@@ -61,6 +62,23 @@ const darkShadows = {
   shadow5: 'rgba(0,0,0,0.6)',
   shadow6: 'rgba(0,0,0,0.7)',
 }
+
+const animations = createAnimations({
+  fast: {
+    damping: 20,
+    mass: 1.2,
+    stiffness: 250,
+  },
+  medium: {
+    damping: 10,
+    mass: 0.9,
+    stiffness: 100,
+  },
+  slow: {
+    damping: 20,
+    stiffness: 60,
+  },
+})
 
 const builtThemes = createThemes({
   componentThemes: defaultComponentThemes,
@@ -115,7 +133,7 @@ const builtThemes = createThemes({
         light: Object.values(Colors.green),
       },
     },
-  },
+  }
 })
 
 export type Themes = typeof builtThemes
@@ -135,6 +153,7 @@ const appConfig = createTamagui({
     body: interFont,
     heading: interFont,
   },
+  animations,
 })
 
 export type AppConfig = typeof appConfig

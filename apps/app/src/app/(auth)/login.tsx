@@ -1,7 +1,12 @@
 import { useRouter } from 'expo-router';
-import { Button, Form, Input, Separator, YStack, XStack } from 'tamagui';
+import { Form, Input, Separator, YStack, XStack } from 'tamagui';
 import { useAuth } from '../../contexts/AuthContext';
-import { Title, Paragraph, Link } from '../../components/ui/Themed';
+import {
+  Title,
+  Paragraph,
+  Link,
+  StyledButton,
+} from '../../components/ui/Themed';
 
 export default function Login() {
   const router = useRouter();
@@ -10,7 +15,7 @@ export default function Login() {
   const handleSignIn = () => {
     // Perform login logic here (e.g., API call)
     // On success, call the login function from the context
-    login();
+    login('user@email.com'); // TODO: Get email from input
     router.replace('/home');
   };
 
@@ -29,32 +34,38 @@ export default function Login() {
         <Input placeholder="Email" size="$4" />
         <Input placeholder="Password" size="$4" secureTextEntry />
         <XStack justifyContent="flex-end" marginTop="$2">
-          <Link onPress={() => router.push('/forgot-password')}>
+          <Link fontSize="$3" onPress={() => router.push('/forgot-password')}>
             Forgot Password?
           </Link>
         </XStack>
 
         <Form.Trigger asChild>
-          <Button theme="accent" size="$4" onPress={handleSignIn} marginTop="$3">
+          <StyledButton
+            theme="accent"
+            size="$4"
+            onPress={handleSignIn}
+            marginTop="$3"
+          >
             Sign In
-          </Button>
+          </StyledButton>
         </Form.Trigger>
       </Form>
 
       <Separator width="100%" marginVertical="$4" />
 
-      <Button
-        theme="accent"
+      <StyledButton
+        theme="secondary"
         variant="outlined"
         size="$4"
         width="100%"
+        marginTop="$4"
       >
         Sign In with Google
-      </Button>
+      </StyledButton>
 
       <XStack justifyContent="center" alignItems="baseline" space="$2" marginTop="$4">
-        <Paragraph>Don't have an account?</Paragraph>
-        <Link onPress={() => router.push('/register')}>
+        <Paragraph fontSize="$3">Don't have an account?</Paragraph>
+        <Link fontSize="$3" onPress={() => router.push('/register')}>
           Sign Up
         </Link>
       </XStack>

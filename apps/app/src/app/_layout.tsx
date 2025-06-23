@@ -4,30 +4,23 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-import { TamaguiProvider } from 'tamagui';
-import { useRouter } from 'expo-router';
-import { Slot } from 'expo-router';
+import { TamaguiProvider, useTheme as useTamaguiTheme } from 'tamagui';
+import { Slot, useRouter } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import tamaguiConfig from '../../tamagui.config';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import {
+  ThemeProvider as CustomThemeProvider,
+  useTheme,
+} from '../contexts/ThemeContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
-  );
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+function Root() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
@@ -56,10 +49,30 @@ function RootLayoutNav() {
     return null;
   }
 
+  return <Slot />;
+}
+
+export default function RootLayout() {
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? 'light'}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Slot />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <CustomThemeProvider>
+          <ThemedApp>
+            <Root />
+          </ThemedApp>
+        </CustomThemeProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
+  );
+}
+
+function ThemedApp({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
+
+  return (
+    <TamaguiProvider config={tamaguiConfig} defaultTheme={'light'}>
+      <ThemeProvider value={DefaultTheme}>
+        {children}
       </ThemeProvider>
     </TamaguiProvider>
   );
