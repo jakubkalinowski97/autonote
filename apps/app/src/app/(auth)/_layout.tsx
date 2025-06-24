@@ -11,6 +11,7 @@ export default function AuthLayout() {
       marginHorizontal="auto"
       alignItems="center"
       paddingTop="$10"
+      backgroundColor="$background"
     >
       <YStack width="100%" padding="$4">
         <Stack screenOptions={{ headerShown: false }}>

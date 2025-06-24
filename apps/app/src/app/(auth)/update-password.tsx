@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { Button, Form, Input, YStack } from 'tamagui';
-import { Title, Paragraph, StyledButton } from '../../components/ui/Themed';
+import { Form, YStack } from 'tamagui';
+import { Title, Paragraph, StyledButton, StyledInput } from '../../components/ui/Themed';
 
 export default function UpdatePassword() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function UpdatePassword() {
       </YStack>
 
       <Form width="100%" gap="$3" onSubmit={handlePasswordUpdate}>
-        <Input placeholder="New Password" size="$4" secureTextEntry />
-        <Input placeholder="Confirm New Password" size="$4" secureTextEntry />
+        <StyledInput placeholder="New Password" size="$4" secureTextEntry />
+        <StyledInput placeholder="Confirm New Password" size="$4" secureTextEntry />
 
         <Form.Trigger asChild>
           <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handlePasswordUpdate}>

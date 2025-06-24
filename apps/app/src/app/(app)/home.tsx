@@ -1,75 +1,112 @@
-import { useState, useRef } from 'react';
-import { YStack, XStack, Input, Button, ScrollView, Text } from 'tamagui';
-import { Send } from '@tamagui/lucide-icons';
+import { YStack, XStack, ScrollView } from 'tamagui';
+import { StyledInput, Subtitle } from '../../components/ui/Themed';
+import NoteCard from '../../components/cards/NoteCard';
+import { WorkspaceCard } from '../../components/cards/WorkspaceCard';
 
-const MOCK_MESSAGES = [
-  { id: 1, sender: 'ai', text: 'Hello! How can I help you today?' },
-  { id: 2, sender: 'user', text: 'What is the weather like in Paris?' },
+interface Note {
+  id: string;
+  title: string;
+  category: string;
+  workspace: string;
+  date: string;
+  type: 'text' | 'image' | 'audio';
+}
+
+interface Workspace {
+  id: string;
+  title: string;
+  count: number;
+  isActive: boolean;
+}
+
+const MOCK_WORKSPACES: Workspace[] = [
+  { id: '1', title: 'Work', count: 12, isActive: true },
+  { id: '2', title: 'Personal', count: 5, isActive: false },
+  { id: '3', title: 'Ideas', count: 8, isActive: false },
+  { id: '4', title: 'Archive', count: 2, isActive: false },
+];
+
+const MOCK_NOTES: Note[] = [
+  {
+    id: '1',
+    title: 'UI Review',
+    category: 'Design',
+    workspace: 'Work',
+    date: '2024-06-07',
+    type: 'text',
+  },
+  {
+    id: '2',
+    title: 'Grocery List',
+    category: 'Personal',
+    workspace: 'Home',
+    date: '2024-06-06',
+    type: 'audio',
+  },
+  {
+    id: '3',
+    title: 'Sprint Planning',
+    category: 'Meetings',
+    workspace: 'Work',
+    date: '2024-06-05',
+    type: 'text',
+  },
+  {
+    id: '4',
+    title: 'Recipe: Avocado Toast',
+    category: 'Cooking',
+    workspace: 'Home',
+    date: '2024-06-04',
+    type: 'image',
+  },
 ];
 
 export default function HomeScreen() {
-  const [messages, setMessages] = useState(MOCK_MESSAGES);
-  const [input, setInput] = useState('');
-  const scrollRef = useRef(null);
-
   return (
-    <YStack flex={1} backgroundColor="$color2">
-      <ScrollView
-        ref={scrollRef}
-        flex={1}
-        padding="$4"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 80 }}
-      >
-        {messages.map((msg) => (
-          <YStack
-            key={msg.id}
-            alignSelf={msg.sender === 'user' ? 'flex-end' : 'flex-start'}
-            backgroundColor={msg.sender === 'user' ? '$accent10' : '$color4'}
-            borderRadius="$6"
-            marginBottom="$3"
-            paddingHorizontal="$4"
-            paddingVertical="$3"
-            maxWidth="80%"
-            shadowColor="$shadow1"
-            shadowRadius={4}
-          >
-            <Text fontFamily="$body" color="$color11" fontSize="$5">
-              {msg.text}
-            </Text>
-          </YStack>
-        ))}
-      </ScrollView>
-      <XStack
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        padding="$4"
-        borderTopWidth={1}
-        borderColor="$color2"
-        alignItems="center"
-        gap="$3"
-      >
-        <Input
-          flex={1}
-          size="$4"
-          borderRadius="$8"
-          backgroundColor="$color2"
-          placeholder="Type your message..."
-          value={input}
-          onChangeText={setInput}
-          fontFamily="$body"
-        />
-        <Button
-          size="$4"
-          borderRadius="$8"
-          backgroundColor="$accent1"
-          icon={<Send color="white" size={20} />}
-          aria-label="Send"
-          disabled={!input.trim()}
-        />
-      </XStack>
-    </YStack>
+    <ScrollView>
+      <YStack flex={1} backgroundColor="$background" paddingVertical="$4">
+        <StyledInput size="$5" placeholder="Research notes..." />
+        <YStack paddingVertical="$6" gap="$4">
+          <Subtitle size="$5" color="$color10">
+            Last notes
+          </Subtitle>
+          <ScrollView horizontal>
+            <XStack gap="$4" flex={1}>
+              {MOCK_NOTES.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  title={note.title}
+                  description={note.category}
+                  type={note.type}
+                  action={() => {
+                    return;
+                  }}
+                />
+              ))}
+            </XStack>
+          </ScrollView>
+        </YStack>
+        <YStack paddingVertical="$6" gap="$4">
+          <Subtitle size="$5" color="$color10">
+            Workspaces
+          </Subtitle>
+          <ScrollView horizontal>
+            <XStack gap="$4" flex={1}>
+              {MOCK_WORKSPACES.map((workspace) => (
+                <WorkspaceCard
+                  key={workspace.id}
+                  title={workspace.title}
+                  count={workspace.count}
+                  isActive={workspace.isActive}
+                  action={() => {
+                    return;
+                  }}
+                />
+              ))}
+            </XStack>
+          </ScrollView>
+        </YStack>
+      </YStack>
+    </ScrollView>
   );
 }

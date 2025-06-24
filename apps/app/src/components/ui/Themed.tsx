@@ -1,4 +1,4 @@
-import { H3, Text, styled, Button } from 'tamagui';
+import { H3, Text, styled, Button, Input, H4 } from 'tamagui';
 
 export const Title = styled(H3, {
   name: 'Title',
@@ -9,6 +9,16 @@ export const Title = styled(H3, {
 export const HeaderTitle = styled(H3, {
   name: 'HeaderTitle',
   fontFamily: '$heading',
+  marginLeft: -16
+});
+
+export const Subtitle = styled(H4, {
+  name: 'Subtitle',
+  fontFamily: '$heading',
+  fontWeight: '200',
+  fontSize: '$4',
+  textTransform: 'lowercase',
+  lineHeight: '$1',
 });
 
 export const Paragraph = styled(Text, {
@@ -35,8 +45,14 @@ export const StyledButton = styled(Button, {
   variants: {
     variant: {
       outlined: {
-        color: '$color10',
+        color: '$color9',
       },
     },
   },
+});
+
+export const StyledInput = styled(Input, {
+  name: 'StyledInput',
+  backgroundColor: '#fff',
+  fontFamily: '$body',
 });

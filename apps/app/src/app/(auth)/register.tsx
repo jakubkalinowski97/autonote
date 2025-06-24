@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
-import { Form, Input, Separator, YStack, XStack } from 'tamagui';
+import { Form, Separator, YStack, XStack } from 'tamagui';
 import {
   Title,
   Paragraph,
   Link,
   StyledButton,
+  StyledInput,
 } from '../../components/ui/Themed';
 
 export default function Register() {
@@ -30,9 +31,9 @@ export default function Register() {
       </YStack>
 
       <Form width="100%" gap="$3" onSubmit={handleSignUp}>
-        <Input placeholder="Email" size="$4" keyboardType="email-address" />
-        <Input placeholder="Password" size="$4" secureTextEntry />
-        <Input placeholder="Confirm Password" size="$4" secureTextEntry />
+        <StyledInput placeholder="Email" size="$4" keyboardType="email-address" />
+        <StyledInput placeholder="Password" size="$4" secureTextEntry />
+        <StyledInput placeholder="Confirm Password" size="$4" secureTextEntry />
 
         <Form.Trigger asChild>
           <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handleSignUp}>

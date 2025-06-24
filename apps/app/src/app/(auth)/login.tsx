@@ -1,11 +1,12 @@
 import { useRouter } from 'expo-router';
-import { Form, Input, Separator, YStack, XStack } from 'tamagui';
+import { Form, Separator, YStack, XStack } from 'tamagui';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   Title,
   Paragraph,
   Link,
   StyledButton,
+  StyledInput,
 } from '../../components/ui/Themed';
 
 export default function Login() {
@@ -27,12 +28,12 @@ export default function Login() {
     >
       <YStack alignItems="center" marginBottom="$4">
         <Title>Welcome Back</Title>
-        <Paragraph color="$color10">Sign in to continue</Paragraph>
+        <Paragraph color="$color9">Sign in to continue</Paragraph>
       </YStack>
 
       <Form width="100%" gap="$3" onSubmit={handleSignIn}>
-        <Input placeholder="Email" size="$4" />
-        <Input placeholder="Password" size="$4" secureTextEntry />
+        <StyledInput placeholder="Email" size="$4" />
+        <StyledInput placeholder="Password" size="$4" secureTextEntry />
         <XStack justifyContent="flex-end" marginTop="$2">
           <Link fontSize="$3" onPress={() => router.push('/forgot-password')}>
             Forgot Password?
