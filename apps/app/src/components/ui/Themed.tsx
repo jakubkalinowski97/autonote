@@ -54,5 +54,4 @@ export const StyledButton = styled(Button, {
 export const StyledInput = styled(Input, {
   name: 'StyledInput',
   backgroundColor: '#fff',
-  fontFamily: '$body',
 });

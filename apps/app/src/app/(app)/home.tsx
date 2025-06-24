@@ -1,7 +1,8 @@
-import { YStack, XStack, ScrollView } from 'tamagui';
+import { XStack, ScrollView } from 'tamagui';
 import { StyledInput, Subtitle } from '../../components/ui/Themed';
 import NoteCard from '../../components/cards/NoteCard';
 import { WorkspaceCard } from '../../components/cards/WorkspaceCard';
+import { AnimatedScreen } from '../../components/ui/AnimatedScreen';
 
 interface Note {
   id: string;
@@ -63,50 +64,52 @@ const MOCK_NOTES: Note[] = [
 
 export default function HomeScreen() {
   return (
-    <ScrollView>
-      <YStack flex={1} backgroundColor="$background" paddingVertical="$4">
-        <StyledInput size="$5" placeholder="Research notes..." />
-        <YStack paddingVertical="$6" gap="$4">
-          <Subtitle size="$5" color="$color10">
-            Last notes
-          </Subtitle>
-          <ScrollView horizontal>
-            <XStack gap="$4" flex={1}>
-              {MOCK_NOTES.map((note) => (
-                <NoteCard
-                  key={note.id}
-                  title={note.title}
-                  description={note.category}
-                  type={note.type}
-                  action={() => {
-                    return;
-                  }}
-                />
-              ))}
-            </XStack>
-          </ScrollView>
-        </YStack>
-        <YStack paddingVertical="$6" gap="$4">
-          <Subtitle size="$5" color="$color10">
-            Workspaces
-          </Subtitle>
-          <ScrollView horizontal>
-            <XStack gap="$4" flex={1}>
-              {MOCK_WORKSPACES.map((workspace) => (
-                <WorkspaceCard
-                  key={workspace.id}
-                  title={workspace.title}
-                  count={workspace.count}
-                  isActive={workspace.isActive}
-                  action={() => {
-                    return;
-                  }}
-                />
-              ))}
-            </XStack>
-          </ScrollView>
-        </YStack>
-      </YStack>
-    </ScrollView>
+    <AnimatedScreen>
+      <ScrollView>
+        <XStack flex={1} backgroundColor="$background" paddingVertical="$4" flexDirection="column">
+          <StyledInput size="$5" placeholder="Research notes..." />
+          <XStack paddingVertical="$6" gap="$4" flexDirection="column">
+            <Subtitle size="$5" color="$color10">
+              Last notes
+            </Subtitle>
+            <ScrollView horizontal>
+              <XStack gap="$4" flex={1}>
+                {MOCK_NOTES.map((note) => (
+                  <NoteCard
+                    key={note.id}
+                    title={note.title}
+                    description={note.category}
+                    type={note.type}
+                    action={() => {
+                      return;
+                    }}
+                  />
+                ))}
+              </XStack>
+            </ScrollView>
+          </XStack>
+          <XStack paddingVertical="$6" gap="$4" flexDirection="column">
+            <Subtitle size="$5" color="$color10">
+              Workspaces
+            </Subtitle>
+            <ScrollView horizontal>
+              <XStack gap="$4" flex={1}>
+                {MOCK_WORKSPACES.map((workspace) => (
+                  <WorkspaceCard
+                    key={workspace.id}
+                    title={workspace.title}
+                    count={workspace.count}
+                    isActive={workspace.isActive}
+                    action={() => {
+                      return;
+                    }}
+                  />
+                ))}
+              </XStack>
+            </ScrollView>
+          </XStack>
+        </XStack>
+      </ScrollView>
+    </AnimatedScreen>
   );
 }
