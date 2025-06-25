@@ -9,7 +9,7 @@ import {
   H4,
 } from 'tamagui';
 import { useState } from 'react';
-import { Title } from './ui/Themed';
+import { Title } from '../ui/Themed';
 import { X } from '@tamagui/lucide-icons';
 
 const NOTE_TYPES = [

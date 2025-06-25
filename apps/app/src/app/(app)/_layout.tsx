@@ -1,9 +1,24 @@
 import { Tabs } from 'expo-router';
-import { Home, Notebook, Plus, Rows, Settings, ArrowLeft, Search } from '@tamagui/lucide-icons';
+import { Home, Notebook, Plus, Rows, Settings, ArrowLeft, Search, Filter } from '@tamagui/lucide-icons';
 import { useTheme, YStack, Button } from 'tamagui';
 import { Pressable } from 'react-native';
 import { HeaderTitle } from '../../components/ui/Themed';
 import { useRouter } from 'expo-router';
+import { FilterSheetProvider, useFilterSheet } from '../../contexts/FilterSheetContext';
+
+function NotesHeaderRight() {
+  const [, setOpen] = useFilterSheet();
+  return (
+    <Button
+      chromeless
+      borderRadius="$10"
+      backgroundColor="transparent"
+      icon={<Filter size={20} />}
+      aria-label="Filter"
+      onPress={() => setOpen(true)}
+    />
+  );
+}
 
 export default function AppLayout() {
   const theme = useTheme();
@@ -14,6 +29,7 @@ export default function AppLayout() {
   }
 
   return (
+    <FilterSheetProvider>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: theme.accent3?.val,
@@ -30,8 +46,6 @@ export default function AppLayout() {
             backgroundColor: theme.background?.val,
           },
           sceneStyle: {
-            paddingHorizontal: 20,
-            paddingTop: 16,
             backgroundColor: theme.background?.val,
           },
           headerTitle: (props) => <HeaderTitle size="$7" fontFamily="$heading" color={theme.color10?.val}>{props.children}</HeaderTitle>,
@@ -41,6 +55,7 @@ export default function AppLayout() {
           name="home"
           options={{
             title: 'home',
+            headerTitle: '',
             tabBarIcon: ({ color }) => <Home color={color} size={28} />,
           }}
         />
@@ -49,6 +64,7 @@ export default function AppLayout() {
           options={{
             title: 'notes',
             tabBarIcon: ({ color }) => <Notebook color={color} size={28} />,
+            headerRight: NotesHeaderRight
           }}
         />
         <Tabs.Screen
@@ -91,11 +107,10 @@ export default function AppLayout() {
             tabBarIcon: ({ color }) => <Rows color={color} size={28} />,
           }}
         />
-                <Tabs.Screen
+        <Tabs.Screen
           name="search"
           options={{
             title: 'search',
-            tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color }) => <Search color={color} size={28} />,
             headerLeft: () => (
               <Button
@@ -120,5 +135,6 @@ export default function AppLayout() {
           }}
         />
       </Tabs>
+    </FilterSheetProvider>
   );
 } 

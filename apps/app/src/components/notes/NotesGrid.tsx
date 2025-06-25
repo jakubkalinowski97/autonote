@@ -1,5 +1,5 @@
 import { Stack } from 'tamagui';
-import { NoteCardCompact } from './cards/NoteCardCompact';
+import { NoteCardCompact } from '../cards/NoteCardCompact';
 
 interface Note {
   id: string;
