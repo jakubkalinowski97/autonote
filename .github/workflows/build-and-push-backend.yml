@@ -57,6 +57,9 @@ jobs:
     needs: build-and-push # This job runs only after the build-and-push job is successful
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -65,7 +68,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v3
         with:
           task-definition: ${{ secrets.ECS_TASK_DEFINITION_NAME }}
           service: ${{ secrets.ECS_SERVICE_NAME }}
