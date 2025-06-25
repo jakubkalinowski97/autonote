@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
-import { Form, Separator, YStack, XStack } from 'tamagui';
+import { Form, Separator, YStack, XStack, Spinner } from 'tamagui';
 import { useAuth } from '../../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import {
   Title,
   Paragraph,
@@ -11,13 +12,25 @@ import {
 
 export default function Login() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, loginWithGoogle, loading, error, isAuthenticated } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSignIn = () => {
-    // Perform login logic here (e.g., API call)
-    // On success, call the login function from the context
-    login('user@email.com'); // TODO: Get email from input
-    router.replace('/home');
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/home');
+    }
+  }, [isAuthenticated, router]);
+
+  const handleSignIn = async () => {
+    setFormError(null);
+    try {
+      await login(email, password);
+      router.replace('/home');
+    } catch (e: any) {
+      setFormError(e?.message || 'Login failed');
+    }
   };
 
   return (
@@ -32,13 +45,30 @@ export default function Login() {
       </YStack>
 
       <Form width="100%" gap="$3" onSubmit={handleSignIn}>
-        <StyledInput placeholder="Email" size="$4" />
-        <StyledInput placeholder="Password" size="$4" secureTextEntry />
+        <StyledInput
+          placeholder="Email"
+          size="$4"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <StyledInput
+          placeholder="Password"
+          size="$4"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
         <XStack justifyContent="flex-end" marginTop="$2">
           <Link fontSize="$3" onPress={() => router.push('/forgot-password')}>
             Forgot Password?
           </Link>
         </XStack>
+
+        {formError || error ? (
+          <Paragraph color="$red10" marginTop="$2">{formError || error}</Paragraph>
+        ) : null}
 
         <Form.Trigger asChild>
           <StyledButton
@@ -46,8 +76,9 @@ export default function Login() {
             size="$4"
             onPress={handleSignIn}
             marginTop="$3"
+            disabled={loading}
           >
-            Sign In
+            {loading ? <Spinner size="small" /> : 'Sign In'}
           </StyledButton>
         </Form.Trigger>
       </Form>
@@ -60,6 +91,8 @@ export default function Login() {
         size="$4"
         width="100%"
         marginTop="$4"
+        disabled={loading}
+        onPress={loginWithGoogle}
       >
         Sign In with Google
       </StyledButton>

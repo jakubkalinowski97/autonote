@@ -1,5 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Form, Separator, YStack, XStack } from 'tamagui';
+import { useAuth } from '../../contexts/AuthContext';
+import React, { useState } from 'react';
 import {
   Title,
   Paragraph,
@@ -10,15 +12,26 @@ import {
 
 export default function Register() {
   const router = useRouter();
+  const { register, loading, error } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleSignUp = () => {
-    // Perform validation here (e.g., check if passwords match)
-    // Perform Supabase registration logic here
-    console.log('Signing up...');
-    // On success, you might want to show a confirmation message
-    // or automatically log the user in and redirect.
-    // For now, we'll just go back to the login page.
-    router.replace('/login');
+  const handleSignUp = async () => {
+    setFormError(null);
+    if (password !== confirmPassword) {
+      setFormError('Passwords do not match');
+      return;
+    }
+    try {
+      await register(email, password);
+      setSuccess(true);
+      setTimeout(() => router.replace('/login'), 1500);
+    } catch (e: any) {
+      setFormError(e?.message || 'Registration failed');
+    }
   };
 
   return (
@@ -31,13 +44,39 @@ export default function Register() {
       </YStack>
 
       <Form width="100%" gap="$3" onSubmit={handleSignUp}>
-        <StyledInput placeholder="Email" size="$4" keyboardType="email-address" />
-        <StyledInput placeholder="Password" size="$4" secureTextEntry />
-        <StyledInput placeholder="Confirm Password" size="$4" secureTextEntry />
+        <StyledInput
+          placeholder="Email"
+          size="$4"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
+        <StyledInput
+          placeholder="Password"
+          size="$4"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <StyledInput
+          placeholder="Confirm Password"
+          size="$4"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+
+        {formError || error ? (
+          <Paragraph color="$red10" marginTop="$2">{formError || error}</Paragraph>
+        ) : null}
+        {success ? (
+          <Paragraph color="$green10" marginTop="$2">Registration successful! Redirecting...</Paragraph>
+        ) : null}
 
         <Form.Trigger asChild>
-          <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handleSignUp}>
-            Sign Up
+          <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handleSignUp} disabled={loading}>
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </StyledButton>
         </Form.Trigger>
       </Form>

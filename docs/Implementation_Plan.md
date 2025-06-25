@@ -134,4 +134,84 @@ This document provides a detailed, step-by-step plan for the engineering team to
 4.  **Beta Testing & Launch:**
     *   Deploy a final version to a staging environment.
     *   Invite a small group of beta testers.
-    *   Address feedback, fix bugs, and prepare for public launch. 
+    *   Address feedback, fix bugs, and prepare for public launch.
+
+---
+
+## Authentication (Auth) Implementation & Integration Plan
+
+### 1. Overview
+- Supabase Auth is used for authentication (email/password and OAuth providers like Google).
+- The backend (NestJS) provides endpoints that proxy to Supabase Auth and validate JWTs.
+- The frontend (Expo/React Native) handles auth flows and securely stores JWTs.
+- A custom `public.users` table is used for app-specific metadata (roles, Stripe integration, etc.), linked to `auth.users` by UUID.
+
+### 2. Backend (NestJS)
+- **Endpoints:** `/auth/register`, `/auth/login`, `/auth/logout`, `/auth/oauth/:provider`, `/auth/profile`.
+- **JWT Validation:** AuthGuard validates JWTs from Supabase and attaches user info to requests.
+- **User Management:** On registration/login (including OAuth), create a record in `public.users` if it doesn't exist.
+- **Role Management:** Add a `role` field to `public.users`. Update via Stripe webhook handler.
+- **API Key Security:** Require `X-API-KEY` header for non-auth endpoints in production.
+- **Logout:** `/auth/logout` endpoint calls Supabase's signOut.
+
+### 3. Frontend (Expo/React Native)
+- **Auth Screens:** Login, Register, and OAuth sign-in (e.g., Google).
+- **OAuth Flow:**
+  1. Call `/auth/oauth/google` to get the Google login URL.
+  2. Redirect user to Google.
+  3. Handle redirect back and extract JWT from Supabase.
+  4. Store JWT securely (expo-secure-store).
+  5. Use JWT for all API requests.
+- **JWT Storage:** Store JWT securely and attach as Bearer token in Authorization header.
+- **Auth Flow:** On app launch, check for valid JWT; redirect to login if missing/expired.
+
+### 4. Database (Supabase)
+- **auth.users:** Managed by Supabase for authentication.
+- **public.users:** App-specific metadata (roles, Stripe ID, etc.), linked by UUID.
+- **Other tables:** `workspaces`, `notes`, `note_history` with `user_id` and `workspace_id` foreign keys.
+- **RLS:** Enable and configure Row-Level Security for all tables.
+
+### 5. Security
+- Store Supabase keys in AWS Secrets Manager.
+- Add API key check for production.
+
+### 6. Third-Party (OAuth) Sign-In
+- Use Supabase's `signInWithOAuth` for providers like Google.
+- Frontend initiates OAuth, handles redirect, and stores JWT.
+- Backend validates JWT and manages user records as with email/password sign-in.
+
+---
+
+## User Role Management Plan
+
+### 1. Account-Level Roles
+- **Field:** `role` in `public.users` (e.g., 'free', 'pro', 'admin')
+- **Default:** 'free' on registration
+- **Upgrade:** Set to 'pro' after successful Stripe payment (via webhook)
+- **Admin:** Set manually (admin panel or SQL)
+- **Usage:** Gate access to premium features in the backend (e.g., via guards or decorators)
+
+### 2. Team/Workspace Roles
+- **Table:** `workspace_members` (or similar)
+- **Fields:** `user_id`, `workspace_id`, `role` ('owner', 'editor', 'viewer')
+- **Usage:** Control permissions within a workspace (edit, view, manage, etc.)
+
+### 3. Stripe Integration for Role Upgrades
+- **Webhook:** Listen for `checkout.session.completed` or similar events
+- **Logic:** On successful payment, update the user's `role` in `public.users` to 'pro'
+- **Downgrade:** Optionally, listen for subscription cancellations and downgrade the role
+
+### 4. Backend Enforcement
+- **Guards/Decorators:** Use NestJS guards or custom decorators to restrict access to certain endpoints/features based on the user's role
+- **Example:**
+  ```typescript
+  @UseGuards(RoleGuard('pro'))
+  @Get('premium-feature')
+  getPremiumFeature() { ... }
+  ```
+
+### 5. Admin/Support
+- **Manual Role Changes:** Provide an admin endpoint or SQL access to set roles to 'admin' or for support cases
+
+### 6. RLS (Row-Level Security)
+- **Policy:** Ensure RLS policies in Supabase respect the user's role for sensitive operations if needed 

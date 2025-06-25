@@ -1,9 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private readonly supabaseService: SupabaseService) {}
+    constructor(
+        private readonly supabaseService: SupabaseService,
+        private readonly authService: AuthService
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
@@ -19,8 +23,24 @@ export class AuthGuard implements CanActivate {
             if (error || !data.user) {
                 throw new UnauthorizedException();
             }
+
+            // Upsert user in public.users if missing
+            await this.authService.upsertUserRecord({
+                id: data.user.id,
+                email: data.user.email,
+                user_metadata: data.user.user_metadata,
+            });
             
-            request['user'] = data.user;
+            // Fetch role from public.users
+            const { data: userRow, error: userError } = await this.supabaseService.getClient()
+                .from('users')
+                .select('role')
+                .eq('id', data.user.id)
+                .single();
+            if (userError || !userRow) {
+                throw new UnauthorizedException('User not found in DB after upsert');
+            }
+            request['user'] = { ...data.user, role: userRow.role };
         } catch {
             throw new UnauthorizedException();
         }

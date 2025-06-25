@@ -5,7 +5,6 @@ export default function AuthLayout() {
   return (
     <YStack
       width="100%"
-      maxWidth={500}
       flex={1}
       justifyContent="flex-start"
       marginHorizontal="auto"
@@ -13,7 +12,7 @@ export default function AuthLayout() {
       paddingTop="$10"
       backgroundColor="$background"
     >
-      <YStack width="100%" padding="$4">
+      <YStack width="100%" maxWidth={500} padding="$4">
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="login" />
           <Stack.Screen name="register" />
