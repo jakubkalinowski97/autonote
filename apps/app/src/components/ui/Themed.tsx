@@ -9,7 +9,7 @@ export const Title = styled(H3, {
 export const HeaderTitle = styled(H3, {
   name: 'HeaderTitle',
   fontFamily: '$heading',
-  marginLeft: -16
+  color: '$color10',
 });
 
 export const Subtitle = styled(H4, {

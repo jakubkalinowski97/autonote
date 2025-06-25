@@ -37,7 +37,7 @@ export function AnimatedScreen({
   }));
 
   return (
-    <Animated.View style={[{ flex: 1 }, animatedStyle, style]}>
+    <Animated.View style={[{ flex: 1, height: '100%', width: '100%' }, animatedStyle, style]}>
       {children}
     </Animated.View>
   );

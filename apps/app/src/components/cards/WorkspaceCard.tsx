@@ -19,11 +19,13 @@ export function WorkspaceCard({
   return (
     <Card
       theme={isActive ? 'accent' : ''}
-      elevate
+      elevation={4}
       size="$4"
       bordered
       width={200}
       style={style}
+      shadowColor="$shadow3"
+      shadowRadius={8}
     >
       <Card.Header padded>
         <XStack alignItems="center" gap="$2">
@@ -34,7 +36,7 @@ export function WorkspaceCard({
       <Card.Footer padded>
         <XStack width="100%" alignItems="center" justifyContent="flex-end">
           {!isActive && (
-            <Button borderRadius="$10" onPress={action}>
+            <Button borderRadius="$4" onPress={action}>
               Select
             </Button>
           )}

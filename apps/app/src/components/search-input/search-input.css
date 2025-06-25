@@ -1,0 +1,17 @@
+.search-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: white;
+  resize: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 200;
+  outline: transparent;
+}
+
+.search-textarea::placeholder {
+  color: rgba(238, 236, 249, 0.795);
+  opacity: 1;
+}

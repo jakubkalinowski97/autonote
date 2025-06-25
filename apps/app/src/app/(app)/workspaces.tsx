@@ -22,7 +22,9 @@ export default function Workspaces() {
 
   return (
     <AnimatedScreen>
-      <YStack flex={1}>
+      <YStack flex={1} 
+          paddingHorizontal="$5"
+          paddingTop="$4">
         <ScrollView flex={1}>
           <YStack gap="$4">
             {rows.map((pair, idx) => (
