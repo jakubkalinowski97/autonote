@@ -68,7 +68,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v3
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v4
         with:
           task-definition: ${{ secrets.ECS_TASK_DEFINITION_NAME }}
           service: ${{ secrets.ECS_SERVICE_NAME }}
