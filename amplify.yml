@@ -15,7 +15,6 @@ applications:
         build:
           commands:
             # Go back to the root again to run the Nx command
-            - cd ../..
             - npx nx export app
       # artifacts: Tells Amplify where to find the generated files for hosting.
       artifacts:
