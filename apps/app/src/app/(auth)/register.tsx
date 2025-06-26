@@ -12,25 +12,17 @@ import {
 
 export default function Register() {
   const router = useRouter();
-  const { register, loading, error } = useAuth();
+  const { register, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [formError, setFormError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   const handleSignUp = async () => {
-    setFormError(null);
-    if (password !== confirmPassword) {
-      setFormError('Passwords do not match');
-      return;
-    }
     try {
       await register(email, password);
-      setSuccess(true);
-      setTimeout(() => router.replace('/login'), 1500);
+      router.replace('/login');
     } catch (e: any) {
-      setFormError(e?.message || 'Registration failed');
+      console.log(e.message);
     }
   };
 
@@ -66,14 +58,6 @@ export default function Register() {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
-
-        {formError || error ? (
-          <Paragraph color="$red10" marginTop="$2">{formError || error}</Paragraph>
-        ) : null}
-        {success ? (
-          <Paragraph color="$green10" marginTop="$2">Registration successful! Redirecting...</Paragraph>
-        ) : null}
-
         <Form.Trigger asChild>
           <StyledButton theme="accent" size="$4" marginTop="$4" onPress={handleSignUp} disabled={loading}>
             {loading ? 'Signing Up...' : 'Sign Up'}

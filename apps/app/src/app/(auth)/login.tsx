@@ -74,7 +74,6 @@ export default function Login() {
           <StyledButton
             theme="accent"
             size="$4"
-            onPress={handleSignIn}
             marginTop="$3"
             disabled={loading}
           >

@@ -1,10 +1,11 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { Home, Notebook, Plus, Rows, Settings, ArrowLeft, Search, Filter } from '@tamagui/lucide-icons';
-import { useTheme, YStack, Button } from 'tamagui';
+import { useTheme, YStack, Button, Spinner } from 'tamagui';
 import { Pressable } from 'react-native';
 import { HeaderTitle } from '../../components/ui/Themed';
 import { useRouter } from 'expo-router';
 import { FilterSheetProvider, useFilterSheet } from '../../contexts/FilterSheetContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 function NotesHeaderRight() {
   const [, setOpen] = useFilterSheet();
@@ -23,12 +24,18 @@ function NotesHeaderRight() {
 export default function AppLayout() {
   const theme = useTheme();
   const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
 
-  if (!theme) {
-    return null; // or a loading indicator
+  if (loading || !theme) {
+    return <Spinner />;
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/login" />;
   }
 
   return (
+
     <FilterSheetProvider>
       <Tabs
         screenOptions={{

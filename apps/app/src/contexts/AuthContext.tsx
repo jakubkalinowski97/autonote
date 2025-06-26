@@ -57,11 +57,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.remove();
   }, []);
 
-  // Fetch user profile if JWT exists
+  const isAuthenticatedInSupabase = storage.getItem('jwt');
+
   const {
     data: user,
     isLoading: loading,
-    refetch,
   } = useQuery<User | null>({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -69,16 +69,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return res.data;
     },
     retry: false,
-    enabled: false, // Only fetch after login or if JWT exists
+    enabled: !!isAuthenticatedInSupabase,
   });
 
-  // On mount, try to fetch profile if JWT exists
-  useEffect(() => {
-    const jwt = storage.getItem('jwt');
-    if (jwt) refetch();
-  }, [refetch]);
-
-  // Login mutation
   const loginMutation = useMutation({
     mutationFn: async ({
       email,
@@ -89,15 +82,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }) => {
       setError(null);
       const res = await api.post('/auth/login', { email, password });
-      const token = res.data.session.access_token;
-      await storage.setItem('jwt', token);
-      await refetch();
+      return res.data;
+    },
+    onSuccess: ({data}) => {
+      const token = data.session.access_token;
+      storage.setItem('jwt', token);
     },
     onError: (err: any) =>
       setError(err?.response?.data?.message || 'Login failed'),
   });
 
-  // Register mutation
   const registerMutation = useMutation({
     mutationFn: async ({
       email,
@@ -113,7 +107,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setError(err?.response?.data?.message || 'Registration failed'),
   });
 
-  // Request password reset mutation
   const requestPasswordResetMutation = useMutation({
     mutationFn: async ({ email }: { email: string }) => {
       setError(null);
@@ -123,7 +116,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setError(err?.response?.data?.message || 'Password reset request failed'),
   });
 
-  // Update password mutation
   const updatePasswordMutation = useMutation({
     mutationFn: async ({ newPassword }: { newPassword: string }) => {
       setError(null);
@@ -133,12 +125,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setError(err?.response?.data?.message || 'Password update failed'),
   });
 
-  // Logout
   const logout = async () => {
     try {
       await api.post('/auth/logout');
-    } catch (err) {
-      // Optionally log error
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Logout failed');
     }
     await storage.deleteItem('jwt');
     queryClient.removeQueries({ queryKey: ['profile'] });
@@ -178,13 +169,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (result.type === 'success' && result.url) {
         const url = new URL(result.url);
-        const fragment = url.hash.substring(1); // remove leading '#'
+        const fragment = url.hash.substring(1)
         const params = new URLSearchParams(fragment);
         const accessToken = params.get('access_token');
         console.log('accessToken', accessToken);
         if (accessToken) {
           storage.setItem('jwt', accessToken);
-          await refetch();
         }
       }
     } catch (err: any) {

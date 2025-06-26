@@ -19,13 +19,6 @@ export class AuthService {
         if (result.error) {
             throw new BadRequestException(result.error.message);
         }
-        if (result.data?.user) {
-            await this.upsertUserRecord({
-                id: result.data.user.id,
-                email: result.data.user.email,
-                user_metadata: result.data.user.user_metadata,
-            });
-        }
         return result;
     }
 
@@ -36,13 +29,6 @@ export class AuthService {
         });
         if (result.error) {
             throw new UnauthorizedException(result.error.message);
-        }
-        if (result.data?.user) {
-            await this.upsertUserRecord({
-                id: result.data.user.id,
-                email: result.data.user.email,
-                user_metadata: result.data.user.user_metadata,
-            });
         }
         return result;
     }
@@ -92,7 +78,7 @@ export class AuthService {
 
     async upsertUserRecord(user: { id: string; email: string; user_metadata?: any }) {
         const { id, email, user_metadata } = user;
-        const { error } = await this.supabaseService.getClient()
+        const { data, error } = await this.supabaseService.getClient()
             .from('users')
             .upsert([
                 {
