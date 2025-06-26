@@ -1,6 +1,6 @@
 import { Redirect, Tabs } from 'expo-router';
 import { Home, Notebook, Plus, Rows, Settings, ArrowLeft, Search, Filter } from '@tamagui/lucide-icons';
-import { useTheme, YStack, Button, Spinner } from 'tamagui';
+import { useTheme, YStack, Button, Spinner, Stack } from 'tamagui';
 import { Pressable } from 'react-native';
 import { HeaderTitle } from '../../components/ui/Themed';
 import { useRouter } from 'expo-router';
@@ -27,7 +27,11 @@ export default function AppLayout() {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading || !theme) {
-    return <Spinner />;
+    return (
+      <Stack flex={1} justifyContent="center" alignItems="center" backgroundColor={theme.background?.val}>
+        <Spinner size="large" />
+      </Stack>
+    )
   }
 
   if (!isAuthenticated) {
