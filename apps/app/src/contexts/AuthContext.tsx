@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const params = new URLSearchParams(fragment);
       const accessToken = params.get('access_token');
       if (accessToken) {
-        storage.setItem('jwt', accessToken);
+        storage.setItem('access_token', accessToken);
         window.location.replace('/home');
       }
     }
@@ -50,14 +50,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const params = new URLSearchParams(fragment);
       const accessToken = params.get('access_token');
       if (accessToken) {
-        storage.setItem('jwt', accessToken);
+        storage.setItem('access_token', accessToken);
       }
     };
     const subscription = Linking.addEventListener('url', handleUrl);
     return () => subscription.remove();
   }, []);
 
-  const isAuthenticatedInSupabase = storage.getItem('jwt');
+  const isAuthenticatedInSupabase = storage.getItem('access_token');
 
   const {
     data: user,
@@ -85,8 +85,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return res.data;
     },
     onSuccess: ({data}) => {
-      const token = data.session.access_token;
-      storage.setItem('jwt', token);
+      const { access_token, refresh_token } = data.session;
+      storage.setItem('access_token', access_token);
+      storage.setItem('refresh_token', refresh_token);
     },
     onError: (err: any) =>
       setError(err?.response?.data?.message || 'Login failed'),
@@ -133,7 +134,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Logout failed');
     }
-    await storage.deleteItem('jwt');
+    await storage.deleteItem('access_token');
+
     queryClient.removeQueries({ queryKey: ['profile'] });
   };
 
@@ -174,9 +176,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const fragment = url.hash.substring(1)
         const params = new URLSearchParams(fragment);
         const accessToken = params.get('access_token');
-        console.log('accessToken', accessToken);
+        const refreshToken = params.get('refresh_token');
         if (accessToken) {
-          storage.setItem('jwt', accessToken);
+          storage.setItem('access_token', accessToken);
+        }
+        if (refreshToken) {
+          storage.setItem('refresh_token', refreshToken);
         }
       }
     } catch (err: any) {

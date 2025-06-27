@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, ForgotPasswordDto, UpdatePasswordDto } from './auth.dto';
+import { AuthDto, ForgotPasswordDto, RefreshTokenDto, UpdatePasswordDto } from './auth.dto';
 import { AuthGuard } from './auth.guard';
 import { User } from './user.decorator';
 import { Provider } from '@supabase/supabase-js';
@@ -50,6 +50,11 @@ export class AuthController {
         } catch (e) {
             throw new BadRequestException(e.message);
         }
+    }
+
+    @Post('refresh-token')
+    async refreshToken(@Body() dto: RefreshTokenDto) {
+        return this.authService.refreshToken(dto.refresh_token);
     }
 
     @UseGuards(AuthGuard)

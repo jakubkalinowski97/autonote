@@ -28,4 +28,22 @@ Supabase is currently allowing the creation of two separate accounts with the sa
 - Report to Supabase support if this is a bug.
 
 ---
-*Documented on: {{DATE}}* 
+*Documented on: {{DATE}}*
+
+---
+
+## Issue: Add robust refresh token support for Google OAuth provider
+
+### Summary
+Currently, the refresh token for Google OAuth users is not always reliably extracted and stored after login. This can break silent authentication and session refresh for Google users.
+
+### Why it's needed
+- Google OAuth users need the refresh token to maintain sessions and refresh access tokens without re-authenticating.
+- Supabase only provides the refresh token at the moment of session creation (immediately after OAuth login).
+
+### Steps to implement
+- [ ] Use the Supabase client on the frontend to set and get the session after Google OAuth login.
+- [ ] Extract and securely store both `access_token` and `refresh_token`.
+- [ ] Ensure the Axios interceptor uses the stored refresh token to call the backend `/auth/refresh-token` endpoint.
+- [ ] Test the flow for both web and mobile (Expo/React Native).
+- [ ] Document the flow and update onboarding instructions for future devs. 

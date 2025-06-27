@@ -11,3 +11,7 @@ export class ForgotPasswordDto {
 export class UpdatePasswordDto {
     newPassword!: string;
 } 
+
+export class RefreshTokenDto {
+    refresh_token!: string;
+}

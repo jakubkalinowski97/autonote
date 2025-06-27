@@ -57,6 +57,7 @@ export default function Login() {
             secureTextEntry
             value={password}
             onChangeText={setPassword}
+            onSubmitEditing={handleSignIn}
           />
           <XStack justifyContent="flex-end" marginTop="$2">
             <Link fontSize="$3" onPress={() => router.push('/forgot-password')}>

@@ -11,7 +11,7 @@ function useWebOAuthHandler() {
       const params = new URLSearchParams(fragment);
       const accessToken = params.get('access_token');
       if (accessToken) {
-        storage.setItem('jwt', accessToken);
+        storage.setItem('access_token', accessToken);
         window.location.hash = '';
       }
     }
@@ -19,7 +19,7 @@ function useWebOAuthHandler() {
 }
 
 export default function AppLayout() {
-  useWebOAuthHandler();
+  // useWebOAuthHandler();
 
   return (
     <Drawer

@@ -1,8 +1,23 @@
 import { XStack, YStack, Text } from 'tamagui';
 import { AnimatedScreen } from '../../components/ui/AnimatedScreen';
 import { SearchInput } from '../../components/search-input/SearchInput';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function HomeScreen() {
+  const { user } = useAuth();
+  const welcomeMessages = [
+    "how can I help you today?",
+    "what would you like to work on?",
+    "ready to take some notes?",
+    "let's get productive!",
+    "what's on your mind?",
+    "how can I assist you?",
+    "let's make something awesome!",
+    "need help organizing your thoughts?",
+    "let's get started!",
+    "what brings you here today?"
+  ];
+  const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
   return (
     <AnimatedScreen>
         <YStack
@@ -16,8 +31,8 @@ export default function HomeScreen() {
         >
           
           <YStack flex={1} alignItems='center' justifyContent='center'>
-            <Text fontSize="$8" fontFamily="$heading">Hi Jakub,</Text>
-            <Text fontSize="$5" fontFamily="$body">how can I help you today?</Text>
+            <Text fontSize="$8" fontFamily="$heading">Hi {user?.name},</Text>
+            <Text fontSize="$5" fontFamily="$body" textAlign='center'>{randomMessage}</Text>
           </YStack>
           <XStack paddingVertical="$3">
             <SearchInput workspace="Work" />

@@ -1,7 +1,11 @@
-import { AudioLines, Mic } from '@tamagui/lucide-icons';
+import { ArrowBigUp, ArrowUp, AudioLines, Mic } from '@tamagui/lucide-icons';
 import { XStack, Text, Card, Button, Square } from 'tamagui';
 import { useEffect, useState } from 'react';
-import Animated, { withTiming, useSharedValue, Easing } from 'react-native-reanimated';
+import Animated, {
+  withTiming,
+  useSharedValue,
+  Easing,
+} from 'react-native-reanimated';
 import './search-input.css';
 
 export function SearchInput({ workspace }: { workspace: string }) {
@@ -17,7 +21,10 @@ export function SearchInput({ workspace }: { workspace: string }) {
   const isExpanded = isRecording || isTextareaFocused;
 
   useEffect(() => {
-    height.value = withTiming(isExpanded ? expandedHeight : defaultHeight, { duration: 150, easing: Easing.bezier(0.25, 0.1, 0.25, 1.0) });
+    height.value = withTiming(isExpanded ? expandedHeight : defaultHeight, {
+      duration: 150,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1.0),
+    });
   }, [isExpanded]);
 
   return (
@@ -70,22 +77,37 @@ export function SearchInput({ workspace }: { workspace: string }) {
                 onPress={() => setIsRecording(!isRecording)}
               >
                 {isRecording ? (
-                  <Square size={12} backgroundColor="#fff" borderRadius='$1' />
+                  <Square size={12} backgroundColor="#fff" borderRadius="$1" />
                 ) : (
                   <Mic size={20} />
                 )}
               </Button>
-              <Button
-                chromeless
-                padding={'$2'}
-                variant="outlined"
-                borderRadius={'$10'}
-                width={40}
-                height={40}
-                onPress={() => setIsVoiceMode(!isVoiceMode)}
-              >
-                <AudioLines size={20} />
-              </Button>
+
+              {isTextareaFocused ? (
+                <Button
+                  chromeless
+                  padding={'$2'}
+                  variant="outlined"
+                  borderRadius={'$10'}
+                  width={40}
+                  height={40}
+                  // onPress={() => setIsRecording(!isRecording)}
+                >
+                  <ArrowUp size={20} />
+                </Button>
+              ) : (
+                <Button
+                  chromeless
+                  padding={'$2'}
+                  variant="outlined"
+                  borderRadius={'$10'}
+                  width={40}
+                  height={40}
+                  onPress={() => setIsVoiceMode(!isVoiceMode)}
+                >
+                  <AudioLines size={20} />
+                </Button>
+              )}
             </XStack>
           </XStack>
         </Card.Footer>

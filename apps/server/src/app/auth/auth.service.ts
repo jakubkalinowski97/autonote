@@ -113,4 +113,12 @@ export class AuthService {
             throw new Error('Failed to update password: ' + error.message);
         }
     }
+
+    async refreshToken(refresh_token: string) {
+      const result = await this.getSupabase().auth.refreshSession({ refresh_token });
+      if (result.error) {
+        throw new BadRequestException(result.error.message);
+      }
+      return result.data.session;
+    }
 } 
