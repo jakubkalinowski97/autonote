@@ -31,12 +31,6 @@ export class AuthController {
         return this.authService.getProfile(user);
     }
 
-    @UseGuards(AuthGuard)
-    @Post('sync-profile')
-    async syncProfile(@User() user) {
-        return this.authService.syncProfile(user);
-    }
-
     @Post('logout')
     async logout() {
         return this.authService.logout();

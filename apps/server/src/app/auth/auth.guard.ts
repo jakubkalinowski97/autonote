@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuthService } from './auth.service';
+import { User } from '@auto-note-workspace/shared';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -40,7 +41,7 @@ export class AuthGuard implements CanActivate {
             if (userError || !userRow) {
                 throw new UnauthorizedException('User not found in DB after upsert');
             }
-            request['user'] = { ...data.user, role: userRow.role };
+            request['user'] = { ...data.user, role: userRow.role } as unknown as User;
         } catch {
             throw new UnauthorizedException();
         }

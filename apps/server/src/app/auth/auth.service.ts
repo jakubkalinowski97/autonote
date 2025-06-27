@@ -1,11 +1,12 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuthDto } from './auth.dto';
-import { Provider } from '@supabase/supabase-js';
+import { Provider, Session } from '@supabase/supabase-js';
+import { User, UserInsert } from '@auto-note-workspace/shared';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly supabaseService: SupabaseService) {}
+    constructor(private readonly supabaseService: SupabaseService) { }
 
     getSupabase() {
         return this.supabaseService.getClient();
@@ -48,7 +49,7 @@ export class AuthService {
         return result;
     }
 
-    async getProfile(user: any) {
+    async getProfile(user: User): Promise<User> {
         // Fetch the user row (with role) from public.users
         const { data: userRow, error } = await this.supabaseService.getClient()
             .from('users')
@@ -60,29 +61,19 @@ export class AuthService {
             throw new Error('User not found in public.users');
         }
 
-        return userRow;
+        return userRow as User;
     }
 
-    async syncProfile(user: any) {
-        await this.upsertUserRecord({
-            id: user.id,
-            email: user.email,
-            user_metadata: user.user_metadata,
-        });
-        return { success: true };
-    }
-
-    async logout() {
+    async logout(): Promise<void> {
         const result = await this.getSupabase().auth.signOut();
         if (result.error) {
             throw new BadRequestException(result.error.message);
         }
-        return result;
     }
 
-    async upsertUserRecord(user: { id: string; email: string; name?: string; user_metadata?: any }) {
+    async upsertUserRecord(user: UserInsert & { id: string; email: string; name?: string; user_metadata?: any }): Promise<void> {
         const { id, email, name, user_metadata } = user;
-        const { data, error } = await this.supabaseService.getClient()
+        const { error } = await this.supabaseService.getClient()
             .from('users')
             .upsert([
                 {
@@ -91,21 +82,21 @@ export class AuthService {
                     name: name ?? user_metadata?.name ?? null,
                     profile: user_metadata ?? null,
                     updated_at: new Date().toISOString(),
-                },
+                } as UserInsert,
             ], { onConflict: 'id' });
         if (error) {
             throw new Error('Failed to upsert user record: ' + error.message);
         }
     }
 
-    async forgotPassword(email: string) {
+    async forgotPassword(email: string): Promise<void> {
         const { error } = await this.getSupabase().auth.resetPasswordForEmail(email);
         if (error) {
             throw new Error('Failed to request password reset: ' + error.message);
         }
     }
 
-    async updatePassword(newPassword: string) {
+    async updatePassword(newPassword: string): Promise<void> {
         const { error } = await this.getSupabase().auth.updateUser({
             password: newPassword,
         });
@@ -114,11 +105,11 @@ export class AuthService {
         }
     }
 
-    async refreshToken(refresh_token: string) {
-      const result = await this.getSupabase().auth.refreshSession({ refresh_token });
-      if (result.error) {
-        throw new BadRequestException(result.error.message);
-      }
-      return result.data.session;
+    async refreshToken(refresh_token: string): Promise<Session> {
+        const result = await this.getSupabase().auth.refreshSession({ refresh_token });
+        if (result.error) {
+            throw new BadRequestException(result.error.message);
+        }
+        return result.data.session;
     }
 } 
