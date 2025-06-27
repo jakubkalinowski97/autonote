@@ -17,7 +17,7 @@ interface AuthContextData {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, name: string) => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -96,12 +96,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutationFn: async ({
       email,
       password,
+      name,
     }: {
       email: string;
       password: string;
+      name: string;
     }) => {
       setError(null);
-      await api.post('/auth/register', { email, password });
+      await api.post('/auth/register', { email, password, name });
     },
     onError: (err: any) =>
       setError(err?.response?.data?.message || 'Registration failed'),
@@ -139,8 +141,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await loginMutation.mutateAsync({ email, password });
   };
 
-  const register = async (email: string, password: string) => {
-    await registerMutation.mutateAsync({ email, password });
+  const register = async (email: string, password: string, name: string) => {
+    await registerMutation.mutateAsync({ email, password, name });
   };
 
   const requestPasswordReset = async (email: string) => {

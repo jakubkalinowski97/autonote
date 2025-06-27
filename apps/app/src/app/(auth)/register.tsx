@@ -17,10 +17,11 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
 
   const handleSignUp = async () => {
     try {
-      await register(email, password);
+      await register(email, password, name);
       router.replace('/registration-success');
     } catch (e: any) {
       console.log(e.message);
@@ -36,6 +37,13 @@ export default function Register() {
         </YStack>
 
         <Form width="100%" gap="$3" onSubmit={handleSignUp}>
+          <StyledInput
+            placeholder="Name"
+            size="$4"
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+          />
           <StyledInput
             placeholder="Email"
             size="$4"
@@ -63,7 +71,6 @@ export default function Register() {
               theme="accent"
               size="$4"
               marginTop="$4"
-              onPress={handleSignUp}
               disabled={loading}
             >
               {loading ? 'Signing Up...' : 'Sign Up'}

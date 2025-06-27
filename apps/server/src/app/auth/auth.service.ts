@@ -15,10 +15,14 @@ export class AuthService {
         const result = await this.getSupabase().auth.signUp({
             email: authDto.email,
             password: authDto.password,
+            options: {
+                data: { name: authDto.name },
+            },
         });
         if (result.error) {
             throw new BadRequestException(result.error.message);
         }
+        // Initial insert into public.users is now handled by a DB trigger on auth.users
         return result;
     }
 
@@ -76,14 +80,15 @@ export class AuthService {
         return result;
     }
 
-    async upsertUserRecord(user: { id: string; email: string; user_metadata?: any }) {
-        const { id, email, user_metadata } = user;
+    async upsertUserRecord(user: { id: string; email: string; name?: string; user_metadata?: any }) {
+        const { id, email, name, user_metadata } = user;
         const { data, error } = await this.supabaseService.getClient()
             .from('users')
             .upsert([
                 {
                     id,
                     email,
+                    name: name ?? user_metadata?.name ?? null,
                     profile: user_metadata ?? null,
                     updated_at: new Date().toISOString(),
                 },
