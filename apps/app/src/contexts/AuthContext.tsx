@@ -1,20 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import api from '../api';
+import api from '../api/api';
 import { storage } from '../utils/storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { Linking, Platform } from 'react-native';
-
-interface User {
-  id: string;
-  email: string;
-  [key: string]: any;
-}
+import { User } from '@auto-note-workspace/shared';
 
 interface AuthContextData {
   isAuthenticated: boolean;
   user: User | null;
+  refetchUser: () => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
@@ -61,7 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const {
     data: user,
-    isLoading: loading,
+    isLoading: profileQueryLoading,
+    refetch: refetchUser,
   } = useQuery<User | null>({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -200,12 +197,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         requestPasswordReset,
         updatePassword,
         loginWithGoogle,
+        refetchUser,
         loading:
-          loading ||
           loginMutation.isPending ||
           registerMutation.isPending ||
           requestPasswordResetMutation.isPending ||
-          updatePasswordMutation.isPending,
+          updatePasswordMutation.isPending ||
+          profileQueryLoading,
         error,
       }}
     >

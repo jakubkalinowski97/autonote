@@ -4,13 +4,14 @@ import { Workspace, WorkspaceInsert, WorkspaceUpdate } from '@auto-note-workspac
 
 @Injectable()
 export class WorkspaceService {
-  private readonly table = 'workspaces';
+  private readonly workspaceTable = 'workspaces';
+  private readonly userTable = 'users';
 
   constructor(private readonly supabaseService: SupabaseService) {}
 
     async create(data: WorkspaceInsert): Promise<Workspace> {
     const { data: result, error } = await this.supabaseService.getClient()
-      .from(this.table)
+      .from(this.workspaceTable)
       .insert([data])
       .select()
       .single();
@@ -20,7 +21,7 @@ export class WorkspaceService {
 
   async findAll(userId: string): Promise<Workspace[]> {
     const { data, error } = await this.supabaseService.getClient()
-      .from(this.table)
+      .from(this.workspaceTable)
       .select('*')
       .eq('owner_id', userId);
     if (error) throw error;
@@ -29,7 +30,7 @@ export class WorkspaceService {
 
   async findOne(id: string): Promise<Workspace> {
     const { data, error } = await this.supabaseService.getClient()
-      .from(this.table)
+      .from(this.workspaceTable)
       .select('*')
       .eq('id', id)
       .single();
@@ -39,7 +40,7 @@ export class WorkspaceService {
 
   async update(id: string, data: WorkspaceUpdate): Promise<Workspace> {
     const { data: result, error } = await this.supabaseService.getClient()
-      .from(this.table)
+      .from(this.workspaceTable)
       .update(data)
       .eq('id', id)
       .select()
@@ -48,11 +49,33 @@ export class WorkspaceService {
     return result as Workspace;
   }
 
-  async remove(id: string): Promise<Workspace> {
+  async remove(id: string, userId: string): Promise<Workspace> {
+    // Fetch the user to check last_selected_workspace_id
+    const { data: user, error: userError } = await this.supabaseService.getClient()
+      .from(this.userTable)
+      .select('last_selected_workspace_id')
+      .eq('id', userId)
+      .single();
+    if (userError) throw userError;
+    if (user?.last_selected_workspace_id === id) {
+      throw new Error('Cannot remove the currently selected workspace. Please select a different workspace first.');
+    }
+    // Proceed with removal
     const { data, error } = await this.supabaseService.getClient()
-      .from(this.table)
+      .from(this.workspaceTable)
       .delete()
       .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    return data as Workspace;
+  }
+
+  async activate(id: string, userId: string): Promise<Workspace> {
+    const { data, error } = await this.supabaseService.getClient()
+      .from(this.userTable)
+      .update({ last_selected_workspace_id: id })
+      .eq('id', userId)
       .select()
       .single();
     if (error) throw error;

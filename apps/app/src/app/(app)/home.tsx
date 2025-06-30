@@ -35,7 +35,7 @@ export default function HomeScreen() {
             <Text fontSize="$5" fontFamily="$body" textAlign='center'>{randomMessage}</Text>
           </YStack>
           <XStack paddingVertical="$3">
-            <SearchInput workspace="Work" />
+            <SearchInput workspace={user?.last_selected_workspace.name || ''} />
           </XStack>
         </YStack>
     </AnimatedScreen>

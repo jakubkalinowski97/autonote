@@ -1,11 +1,8 @@
-import {
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { TamaguiProvider } from 'tamagui';
+import { PortalProvider, TamaguiProvider } from 'tamagui';
 import { Slot } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -16,6 +13,7 @@ import {
   useTheme,
 } from '../contexts/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SheetProvider } from '../contexts/SheetContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,7 +50,11 @@ export default function RootLayout() {
         <AuthProvider>
           <CustomThemeProvider>
             <ThemedApp>
-              <Root />
+              <PortalProvider shouldAddRootHost>
+                <SheetProvider>
+                  <Root />
+                </SheetProvider>
+              </PortalProvider>
             </ThemedApp>
           </CustomThemeProvider>
         </AuthProvider>

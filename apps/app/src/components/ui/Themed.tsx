@@ -1,4 +1,4 @@
-import { H3, Text, styled, Button, Input, H4 } from 'tamagui';
+import { H3, Text, styled, Button, Input, H4, TextArea } from 'tamagui';
 
 export const Title = styled(H3, {
   name: 'Title',
@@ -53,5 +53,10 @@ export const StyledButton = styled(Button, {
 
 export const StyledInput = styled(Input, {
   name: 'StyledInput',
+  backgroundColor: '#fff',
+});
+
+export const StyledTextArea = styled(TextArea, {
+  name: 'StyledTextArea',
   backgroundColor: '#fff',
 });

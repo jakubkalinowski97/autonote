@@ -1,4 +1,4 @@
-import { ArrowBigUp, ArrowUp, AudioLines, Mic } from '@tamagui/lucide-icons';
+import { ArrowUp, AudioLines, Mic } from '@tamagui/lucide-icons';
 import { XStack, Text, Card, Button, Square } from 'tamagui';
 import { useEffect, useState } from 'react';
 import Animated, {
@@ -13,7 +13,7 @@ export function SearchInput({ workspace }: { workspace: string }) {
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
 
-  const defaultHeight = 140;
+  const defaultHeight = 160;
   const expandedHeight = defaultHeight * 1.5;
   const height = useSharedValue(defaultHeight);
 
@@ -91,7 +91,6 @@ export function SearchInput({ workspace }: { workspace: string }) {
                   borderRadius={'$10'}
                   width={40}
                   height={40}
-                  // onPress={() => setIsRecording(!isRecording)}
                 >
                   <ArrowUp size={20} />
                 </Button>

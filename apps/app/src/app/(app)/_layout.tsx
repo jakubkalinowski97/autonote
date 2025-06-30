@@ -4,11 +4,11 @@ import { useTheme, YStack, Button, Spinner, Stack } from 'tamagui';
 import { Pressable } from 'react-native';
 import { HeaderTitle } from '../../components/ui/Themed';
 import { useRouter } from 'expo-router';
-import { FilterSheetProvider, useFilterSheet } from '../../contexts/FilterSheetContext';
+import { useSheet } from '../../contexts/SheetContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 function NotesHeaderRight() {
-  const [, setOpen] = useFilterSheet();
+  const { openSheet } = useSheet();
   return (
     <Button
       chromeless
@@ -16,7 +16,7 @@ function NotesHeaderRight() {
       backgroundColor="transparent"
       icon={<Filter size={20} />}
       aria-label="Filter"
-      onPress={() => setOpen(true)}
+      onPress={() => openSheet(<div>Hello</div>)}
     />
   );
 }
@@ -29,7 +29,7 @@ export default function AppLayout() {
   if (loading || !theme) {
     return (
       <Stack flex={1} justifyContent="center" alignItems="center" backgroundColor={theme.background?.val}>
-        <Spinner size="large" />
+        <Spinner size="large" color="$color10"/>
       </Stack>
     )
   }
@@ -39,8 +39,6 @@ export default function AppLayout() {
   }
 
   return (
-
-    <FilterSheetProvider>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: theme.accent3?.val,
@@ -115,7 +113,9 @@ export default function AppLayout() {
           name="workspaces"
           options={{
             title: 'workspaces',
+            headerShown: false,
             tabBarIcon: ({ color }) => <Rows color={color} size={28} />,
+
           }}
         />
         <Tabs.Screen
@@ -146,6 +146,5 @@ export default function AppLayout() {
           }}
         />
       </Tabs>
-    </FilterSheetProvider>
   );
 } 

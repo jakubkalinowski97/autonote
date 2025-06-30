@@ -10,7 +10,6 @@ export class WorkspaceController {
 
   @Post()
   async create(@Body() body: WorkspaceInsert, @Request() req): Promise<Workspace> {
-    // Ensure owner_id is set to the authenticated user
     const data = { ...body, owner_id: req.user.id };
     return this.workspaceService.create(data);
   }
@@ -31,7 +30,12 @@ export class WorkspaceController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Workspace> {
-    return this.workspaceService.remove(id);
+  async remove(@Param('id') id: string, @Request() req): Promise<Workspace> {
+    return this.workspaceService.remove(id, req.user.id);
+  }
+
+  @Post(':id/activate')
+  async activate(@Param('id') id: string, @Request() req): Promise<Workspace> {
+    return this.workspaceService.activate(id, req.user.id);
   }
 } 

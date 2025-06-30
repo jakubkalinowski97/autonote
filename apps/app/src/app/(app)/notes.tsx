@@ -8,7 +8,7 @@ import {
   NotesFilter,
 } from '../../components/notes/NotesFilterSheet';
 import { useState } from 'react';
-import { useFilterSheet } from '../../contexts/FilterSheetContext';
+import { useSheet } from '../../contexts/SheetContext';
 
 interface Note {
   id: string;
@@ -198,7 +198,7 @@ const MOCK_NOTES = [
 ];
 
 export default function Notes() {
-  const [open, setOpen] = useFilterSheet();
+  const { openSheet, closeSheet, setData } = useSheet();
   const [filters, setFilters] = useState<NotesFilter>({
     type: '',
     workspace: '',
@@ -250,12 +250,6 @@ export default function Notes() {
           </XStack>
         </YStack>
       </ScrollView>
-      <NotesFilterSheet
-        open={open}
-        onOpenChange={setOpen}
-        filters={filters}
-        setFilters={setFilters}
-      />
     </AnimatedScreen>
   );
 }

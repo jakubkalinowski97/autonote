@@ -49,19 +49,23 @@ export class AuthService {
         return result;
     }
 
-    async getProfile(user: User): Promise<User> {
-        // Fetch the user row (with role) from public.users
+    async getProfile(user: User): Promise<any> {
+        // Fetch the user row (with role) from public.users, and join the workspace name
         const { data: userRow, error } = await this.supabaseService.getClient()
             .from('users')
-            .select('*')
+            .select(`
+                *,
+                last_selected_workspace:workspaces!users_last_selected_workspace_id_fkey (
+                    name
+                )
+            `)
             .eq('id', user.id)
             .single();
 
         if (error || !userRow) {
             throw new Error('User not found in public.users');
         }
-
-        return userRow as User;
+        return userRow;
     }
 
     async logout(): Promise<void> {

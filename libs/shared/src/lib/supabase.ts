@@ -718,6 +718,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          last_selected_workspace_id: string | null
           name: string | null
           profile: Json | null
           role: string
@@ -728,6 +729,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id: string
+          last_selected_workspace_id?: string | null
           name?: string | null
           profile?: Json | null
           role?: string
@@ -738,13 +740,22 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          last_selected_workspace_id?: string | null
           name?: string | null
           profile?: Json | null
           role?: string
           stripe_customer_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_last_selected_workspace_id_fkey"
+            columns: ["last_selected_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workspaces: {
         Row: {

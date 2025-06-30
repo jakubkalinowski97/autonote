@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { storage } from './utils/storage';
+import { storage } from '../utils/storage';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/api', // Change to your backend URL if needed
@@ -17,7 +17,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = await storage.getItem('refresh_token');
+      await storage.deleteItem('access_token');
+      const refreshToken = storage.getItem('refresh_token');
       if (refreshToken) {
         const { data } = await axios.post('http://localhost:3000/api/auth/refresh-token', { refresh_token: refreshToken });
         storage.setItem('access_token', data.access_token);
