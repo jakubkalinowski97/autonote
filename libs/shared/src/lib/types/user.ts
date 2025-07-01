@@ -1,4 +1,4 @@
-import { Database } from '../supabase';
+import { Database } from './supabase.generated';
 
 export type User = Database['public']['Tables']['users']['Row'] & {
   last_selected_workspace: Database['public']['Tables']['workspaces']['Row'];

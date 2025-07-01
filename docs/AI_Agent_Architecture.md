@@ -160,16 +160,17 @@ flowchart TD
     AG5a(["If image: OCR/describe with GPT-4 Vision"])
     AG6a(["If text: Use as-is"])
     AG7a(["Unify input to text"])
-    AG8a(["Apply user-selected transformation style (LLM)"])
-    AG9a(["Store original & transformed note in note_versions"])
-    AG10a(["Update/create note in notes table"])
-    AG11a(["Generate embedding for transformed note"])
-    AG12a(["Store embedding in note_embeddings (vector DB)"])
-    AG13a(["Store media in media_files (if any)"])
-    AG14a(["Assign tags (manual or AI-suggested)"])
-    AG15a(["Supabase: Enforce workspace & user permissions"])
+    AG8a(["Summarize note (LLM)"])
+    AG9a(["Generate tags (AI-suggested or manual)"])
+    AG10a(["Create embedding (summary + tags + title)"])
+    AG11a(["Store original & transformed note in note_versions"])
+    AG12a(["Update/create note in notes table"])
+    AG13a(["Store embedding in note_embeddings (vector DB)"])
+    AG14a(["Store media in media_files (if any)"])
+    AG15a(["Assign tags (manual or AI-suggested)"])
+    AG16a(["Supabase: Enforce workspace & user permissions"])
     F3a(["Frontend updates UI with new note"])
-    AG16a(["View/Edit Note History or Revert Version"])
+    AG17a(["View/Edit Note History or Revert Version"])
 
     %% --- Ask Question Branch ---
     AG2b(["If Ask Question: Retrieve recent conversation history"])
@@ -193,12 +194,11 @@ flowchart TD
     AG3a -- "audio" --> AG4a --> AG7a
     AG3a -- "image" --> AG5a --> AG7a
     AG2a -- "text" --> AG6a --> AG7a
-    AG7a --> AG8a --> AG9a --> AG10a --> AG11a --> AG12a --> AG13a --> AG14a --> AG15a --> F3a
-    F3a -- "User requests history" --> AG16a
-    AG16a -- "Revert" --> AG9a
+    AG7a --> AG8a --> AG9a --> AG10a --> AG11a --> AG12a --> AG13a --> AG14a --> AG15a --> AG16a --> F3a
+    F3a -- "User requests history" --> AG17a
+    AG17a -- "Revert" --> AG11a
 
     %% Ask Question Flow
     AG1 -- "Ask Question" --> AG2b --> AG3b --> AG4b
     AG4b -- "Semantic Search" --> AG5b --> AG6b --> AG13b --> F3b
     AG4b -- "Q&A" --> AG7b --> AG8b --> AG9b --> AG10b --> AG11b --> AG12b --> AG13b --> F3b
-```
